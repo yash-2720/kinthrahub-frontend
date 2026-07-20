@@ -10,14 +10,3 @@ import { RouterOutlet } from '@angular/router';
 export class App {
 }
 
-
-// │   ├── features
-// │   │   ├── application-user
-// │   │   ├── authentication
-// │   │   ├── dashboard
-// │   │   ├── donation-plan
-// │   │   ├── donation-request
-// │   │   ├── donation-transaction
-// │   │   ├── employee
-// │   │   ├── hospital
-// │   │   └── payroll
