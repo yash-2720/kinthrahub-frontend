@@ -2,3 +2,5 @@ Day 1
 
 1) Downloading required software
 2) Environment setup
+
+3) Testing test branch
