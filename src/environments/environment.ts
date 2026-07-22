@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
 
-  apiUrl: 'https://api.kinthrahub.com'
+  apiUrl: 'http://localhost:8080'
 };
