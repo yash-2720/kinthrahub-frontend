@@ -11,8 +11,9 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:service": {
-            "injectable": true
-    }},
+          "injectable": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -21,6 +22,9 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
