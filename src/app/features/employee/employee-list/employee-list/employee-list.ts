@@ -10,6 +10,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { ChangeDetectorRef } from '@angular/core';
+import { MatPaginatorModule, type PageEvent } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
+import { EmployeeViewDialog } from '../../components/employee-view-dialog/employee-view-dialog';
 
 @Component({
   selector: 'app-employee-list',
@@ -22,20 +30,35 @@ import { ChangeDetectorRef } from '@angular/core';
     MatButtonModule,
     MatListModule,
     MatTableModule,
-  ],
+    MatPaginatorModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatTooltipModule,
+    FormsModule
+   
+],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.css',
 })
 export class EmployeeList implements OnInit {
-  constructor(private employeeService: EmployeeService, private cdr: ChangeDetectorRef) {
+
+  constructor(
+    private employeeService: EmployeeService,
+    private cdr: ChangeDetectorRef,
+    private dialogue : MatDialog
+  ) {
     console.log('Constructor');
   }
 
   employees: EmployeeResponse[] = [];
 
+  totalElements = 0;
+
   page = 0;
 
-  size = 10;
+  size = 5;
 
   search = '';
 
@@ -47,109 +70,59 @@ export class EmployeeList implements OnInit {
     'employeeName',
     'employeeEmail',
     'employeePhoneNumber',
+    'actions'
   ];
 
   ngOnInit() {
     console.log('ngOnInit');
     this.loadEmployees();
     console.log(this.employees);
-    
   }
 
-  loadEmployees() {
-    this.employeeService.getAllEmployees(this.page, this.size, this.search, this.active).subscribe({
-      next: (response) => {
-        console.log('Before assignment:', this.employees.length);
-        console.log(response.content)
-        this.employees = response.content;
-            // TODO:
-          // Temporary workaround for Angular 22 rendering issue.
-          // Remove after upgrading Angular or identifying the root cause.
-        this.cdr.detectChanges();
-        console.log('After assignment:', this.employees.length);
-      },
-    });
-  }
 
-//   loadEmployees() {
 
-//     this.employees = [
-//         {
-//             employeeId: '1',
-//             employeeNumber: 'EMP001',
-//             employeeName: 'Rahul',
-//             employeeEmail: 'rahul@test.com',
-//             employeePhoneNumber: '9999999999',
-//             basicSalary: 10000,
-//             active: true
-//         }
-//     ];
+ loadEmployees(): void {
 
-// }
+  const request = this.search.trim()
+    ? this.employeeService.searchEmployees(
+        this.page,
+        this.size,
+        this.search,
+        this.active
+      )
+    : this.employeeService.getAllEmployees(
+        this.page,
+        this.size,
+        this.search,
+        this.active
+      );
+
+  request.subscribe({
+    next: (response) => {
+      this.employees = response.content;
+      this.totalElements = response.totalElements;
+      this.cdr.detectChanges();
+    }
+  });
+
 }
 
+  onPageChange(event: PageEvent): void {
+    this.page = event.pageIndex;
 
-// import { Component, OnInit } from '@angular/core';
-// import { EmployeeResponse } from '../../employee-response.model';
-// import { EmployeeService } from '../../employee.service';
-// import { CommonModule } from '@angular/common';
-// import { MatToolbarModule } from '@angular/material/toolbar';
-// import { MatSidenavModule } from '@angular/material/sidenav';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatListModule } from '@angular/material/list';
-// import { MatTableModule } from '@angular/material/table';
+    this.size = event.pageSize;
 
-// @Component({
-//   selector: 'app-employee-list',
-//   imports: [
-//     CommonModule,
-//     MatToolbarModule,
-//     MatSidenavModule,
-//     MatButtonModule,
-//     MatListModule,
-//     MatTableModule,
-//   ],
-//   templateUrl: './employee-list.html',
-//   styleUrl: './employee-list.css',
-// })
-// export class EmployeeList implements OnInit {
-//   constructor(private employeeService: EmployeeService) {}
+    this.loadEmployees();
+  }
 
-//   employees: EmployeeResponse[] = [];
-//   page = 0;
-//   size = 10;
-//   search = '';
-//   active = true;
-//   loadError: string | null = null;
+  onSearch() {
+    this.page = 0; // Reset to the first page when searching
+    this.loadEmployees();
+  }
 
-//   displayedColumns: string[] = [
-//     'employeeId',
-//     'employeeNumber',
-//     'employeeName',
-//     'employeeEmail',
-//     'employeePhoneNumber',
-//   ];
 
-//   ngOnInit() {
-//     this.loadEmployees();
-//   }
+  openViewDialogue(employeeId : String) : void{
+    this.dialogue.open(EmployeeViewDialog,{data : {employeeId : employeeId}});
 
-//   loadEmployees() {
-//     this.loadError = null;
-//     this.employeeService.getAllEmployees(this.page, this.size, this.search, this.active).subscribe({
-//       next: (response) => {
-//         console.log('Raw API response:', response); // TEMP: check this shape against PageResponse<T>
-//         // Defensive guard: if `content` is missing, the payload isn't shaped
-//         // like PageResponse<T> — surface it instead of failing silently.
-//         this.employees = response?.content ?? [];
-//         if (!response?.content) {
-//           console.warn('response.content was missing — check API envelope shape', response);
-//         }
-//       },
-//       error: (err) => {
-//         this.loadError = 'Failed to load employees.';
-//         console.error('getAllEmployees failed:', err);
-//       },
-//     });
-//   }
-// }
+  }
+}
