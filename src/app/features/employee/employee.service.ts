@@ -51,5 +51,9 @@ export class EmployeeService {
 
   getEmployeeById(employeeId: string): Observable<EmployeeResponse> {
       return this.http.get<EmployeeResponse>(`${this.EMPLOYEE_API}/getById/${employeeId}`);
-  } 
+  }
+  
+  softDeleteEmployee(employeeId: string): Observable<EmployeeResponse> {
+    return this.http.delete<EmployeeResponse>(`${this.EMPLOYEE_API}/deleteEmployee/${employeeId}`);
+  }
 }

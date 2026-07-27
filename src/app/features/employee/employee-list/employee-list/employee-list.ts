@@ -18,13 +18,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeViewDialog } from '../../components/employee-view-dialog/employee-view-dialog';
+import { EmployeeDeleteDialog } from '../../components/employee-delete-dialog/employee-delete-dialog';
 
 @Component({
   selector: 'app-employee-list',
   standalone: true,
   imports: [
     CommonModule,
-    // RouterOutlet,
     MatToolbarModule,
     MatSidenavModule,
     MatButtonModule,
@@ -43,6 +43,7 @@ import { EmployeeViewDialog } from '../../components/employee-view-dialog/employ
   styleUrl: './employee-list.css',
 })
 export class EmployeeList implements OnInit {
+
 
   constructor(
     private employeeService: EmployeeService,
@@ -125,4 +126,26 @@ export class EmployeeList implements OnInit {
     this.dialogue.open(EmployeeViewDialog,{data : {employeeId : employeeId}});
 
   }
+
+  
+
+  openDeleteDialogue(employeeId: string): void {
+
+  const dialogRef = this.dialogue.open(EmployeeDeleteDialog, {
+    data: {
+      employeeId: employeeId
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+
+    if (result) {
+
+      this.loadEmployees();
+
+    }
+
+  });
+
+}
 }
