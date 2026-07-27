@@ -5,6 +5,7 @@ import { EmployeeService } from '../../employee.service';
 import  { EmployeeResponse } from '../../employee-response.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import  { EmployeeList } from '../../employee-list/employee-list/employee-list';
+import  { SnackbarService } from '../../../../shared/services/snackbar.service';
 
 @Component({
   selector: 'app-employee-delete-dialog',
@@ -18,7 +19,7 @@ export class EmployeeDeleteDialog {
     private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef,
     private dialogRef: MatDialogRef<EmployeeDeleteDialog>,
-    private snackBar: MatSnackBar,
+    private snackbar: SnackbarService,
     @Inject(MAT_DIALOG_DATA) public data: { employeeId: string },
 
   ) {}
@@ -26,14 +27,13 @@ export class EmployeeDeleteDialog {
   deleteEmployee(employeeId: string): void {
     this.employeeService.softDeleteEmployee(employeeId).subscribe({
       next: () => {
-        this.snackBar.open('Employee deleted successfully', 'Close', {
-          duration: 3000,
-        });
+        this.snackbar.success('Employee deleted successfully.');
        
         this.dialogRef.close(true); // Close the dialog and pass true to indicate successful deletion
       },
       error: (error: any) => {
         console.error('Error deleting employee:', error);
+        this.snackbar.error('Failed to delete employee.');
       },
     });
   }

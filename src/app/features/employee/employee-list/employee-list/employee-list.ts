@@ -19,6 +19,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeViewDialog } from '../../components/employee-view-dialog/employee-view-dialog';
 import { EmployeeDeleteDialog } from '../../components/employee-delete-dialog/employee-delete-dialog';
+import type { EmployeeRequest } from '../../employee-request.model';
+import { EmployeeForm } from '../../employee-form/employee-form/employee-form';
 
 @Component({
   selector: 'app-employee-list',
@@ -36,22 +38,17 @@ import { EmployeeDeleteDialog } from '../../components/employee-delete-dialog/em
     MatInputModule,
     MatIconModule,
     MatTooltipModule,
-    FormsModule
-   
-],
+    FormsModule,
+  ],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.css',
 })
 export class EmployeeList implements OnInit {
-
-
   constructor(
     private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef,
-    private dialogue : MatDialog
-  ) {
-    console.log('Constructor');
-  }
+    private dialog: MatDialog,
+  ) {}
 
   employees: EmployeeResponse[] = [];
 
@@ -71,7 +68,7 @@ export class EmployeeList implements OnInit {
     'employeeName',
     'employeeEmail',
     'employeePhoneNumber',
-    'actions'
+    'actions',
   ];
 
   ngOnInit() {
@@ -80,33 +77,19 @@ export class EmployeeList implements OnInit {
     console.log(this.employees);
   }
 
+  loadEmployees(): void {
+    const request = this.search.trim()
+      ? this.employeeService.searchEmployees(this.page, this.size, this.search, this.active)
+      : this.employeeService.getAllEmployees(this.page, this.size, this.search, this.active);
 
-
- loadEmployees(): void {
-
-  const request = this.search.trim()
-    ? this.employeeService.searchEmployees(
-        this.page,
-        this.size,
-        this.search,
-        this.active
-      )
-    : this.employeeService.getAllEmployees(
-        this.page,
-        this.size,
-        this.search,
-        this.active
-      );
-
-  request.subscribe({
-    next: (response) => {
-      this.employees = response.content;
-      this.totalElements = response.totalElements;
-      this.cdr.detectChanges();
-    }
-  });
-
-}
+    request.subscribe({
+      next: (response) => {
+        this.employees = response.content;
+        this.totalElements = response.totalElements;
+        this.cdr.detectChanges();
+      },
+    });
+  }
 
   onPageChange(event: PageEvent): void {
     this.page = event.pageIndex;
@@ -121,31 +104,35 @@ export class EmployeeList implements OnInit {
     this.loadEmployees();
   }
 
-
-  openViewDialogue(employeeId : String) : void{
-    this.dialogue.open(EmployeeViewDialog,{data : {employeeId : employeeId}});
-
+  openViewDialog(employeeId: String): void {
+    this.dialog.open(EmployeeViewDialog, { data: { employeeId: employeeId } });
   }
 
-  
+  openDeleteDialog(employeeId: string): void {
+    const dialogRef = this.dialog.open(EmployeeDeleteDialog, {
+      data: {
+        employeeId: employeeId,
+      },
+    });
 
-  openDeleteDialogue(employeeId: string): void {
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadEmployees();
+      }
+    });
+  }
 
-  const dialogRef = this.dialogue.open(EmployeeDeleteDialog, {
-    data: {
-      employeeId: employeeId
-    }
-  });
+  openAddEmployee(): void {
+  const dialogRef = this.dialog.open(EmployeeForm, {
+  width: '750px',
+  maxWidth: '90vw',
+  disableClose: true
+});
 
-  dialogRef.afterClosed().subscribe(result => {
-
-    if (result) {
-
-      this.loadEmployees();
-
-    }
-
-  });
-
-}
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadEmployees();
+      }
+    });
+  }
 }
