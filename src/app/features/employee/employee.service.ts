@@ -5,6 +5,7 @@ import { EmployeeResponse } from './employee-response.model';
 import { PageResponse } from '../../core/models/page-response.model';
 import { Observable } from 'rxjs';
 import type { EmployeeRequest } from './employee-request.model';
+import type { UpdateEmployeeRequest } from './update-employee-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -60,5 +61,9 @@ export class EmployeeService {
 
   addEmployee(employeeRequest: EmployeeRequest): Observable<EmployeeResponse> {
     return this.http.post<EmployeeResponse>(`${this.EMPLOYEE_API}/addEmployee`, employeeRequest);
+  }
+
+  updateEmployee(employeeId: string, employeeRequest: UpdateEmployeeRequest): Observable<EmployeeResponse> {
+    return this.http.put<EmployeeResponse>(`${this.EMPLOYEE_API}/updateEmployee/${employeeId}`, employeeRequest);
   }
 }

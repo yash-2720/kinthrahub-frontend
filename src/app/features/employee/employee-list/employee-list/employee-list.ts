@@ -123,11 +123,31 @@ export class EmployeeList implements OnInit {
   }
 
   openAddEmployee(): void {
-  const dialogRef = this.dialog.open(EmployeeForm, {
-  width: '750px',
-  maxWidth: '90vw',
-  disableClose: true
-});
+    const dialogRef = this.dialog.open(EmployeeForm, {
+      width: '750px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: {
+        mode: 'add',
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadEmployees();
+      }
+    });
+  }
+
+  openEditEmployee(employeeId: string): void {
+    const dialogRef = this.dialog.open(EmployeeForm, {
+      width: '750px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: {
+        mode: 'edit',
+        employeeId: employeeId,
+      },
+    });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
