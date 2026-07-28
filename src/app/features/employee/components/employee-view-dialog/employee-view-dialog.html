@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Employee Details</h2>
+
+<mat-dialog-content>
+    @if (employeeData != null) {
+        <p><strong>Employee ID:</strong> {{ employeeData.employeeId }}</p>
+        <p><strong>Employee Number:</strong> {{ employeeData.employeeNumber }}</p>
+        <p><strong>Employee Name:</strong> {{ employeeData.employeeName }}</p>
+        <p><strong>Employee Email:</strong> {{ employeeData.employeeEmail }}</p>
+        <p><strong>Phone Number:</strong> {{ employeeData.employeePhoneNumber }}</p>
+        <p><strong>Status:</strong> {{ employeeData.active ? 'Active' : 'Inactive' }}</p>
+    } @else {
+        <p>Loading employee data...</p>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

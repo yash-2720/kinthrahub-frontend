@@ -1,0 +1,38 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-dialog-content {
+  min-width: 700px;
+  max-height: 70vh;
+  overflow: auto;
+  padding-top: 8px;
+}
+
+mat-dialog-actions {
+  padding: 16px 24px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+.dialog-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-left: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+mat-dialog-content {
+  padding-top: 20px;
+}

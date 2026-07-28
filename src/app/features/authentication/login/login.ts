@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { LoginRequest } from '../../../core/models/login-request';
 import  { TokenService } from '../../../core/services/token.service';
+import { CanActivateFn, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class Login {
 
   loginForm : FormGroup;
 
-  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private tokenService: TokenService) {
+  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private tokenService: TokenService, private router: Router) {
     this.loginForm = this.fb.group({
     username: [''],
     password: ['']
@@ -32,6 +33,7 @@ export class Login {
         this.tokenService.saveToken(response.token);
         console.log('Jwt Token:', response.token);
         console.log(this.tokenService.getToken());
+        this.redirectToDashboard();
       },
       error: (error) => {
         console.error('Login faileddd:', error);
@@ -40,6 +42,10 @@ export class Login {
 
   }
 
-
+ redirectToDashboard() {
+  this.router.navigate(['/dashboard']);
+}
   
 }
+
+
