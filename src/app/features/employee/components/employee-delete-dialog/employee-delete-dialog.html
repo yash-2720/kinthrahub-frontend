@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Confirm Delete</h2>
+
+<mat-dialog-content>
+  <h4>Are you sure you want to delete this employee?</h4>
+  <p><strong>Note:</strong> This action will deactivate the employee and they will no longer appear in the active employee list.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+   <button mat-button mat-dialog-open (click)="deleteEmployee(data.employeeId)">Yes</button>
+   <button mat-button mat-dialog-close>No</button>
+</mat-dialog-actions>
