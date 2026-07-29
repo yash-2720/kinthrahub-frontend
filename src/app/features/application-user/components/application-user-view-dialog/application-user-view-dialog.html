@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>App User Details</h2>
+
+<mat-dialog-content>
+  @if (appUserData == null) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    @if (appUserData != null) {
+      <p><strong>User ID:</strong> {{ appUserData.userId }}</p>
+      <p><strong>Username:</strong> {{ appUserData.username }}</p>
+      <p><strong>Employee Id:</strong> {{ appUserData.employeeId }}</p>
+      <p><strong>Employee Name:</strong> {{ appUserData.employeeName }}</p>
+      <p><strong>Role:</strong> {{ appUserData.roleName }}</p>
+      <p><strong>Last Login</strong> {{ appUserData.lastLogin }}</p>
+      <p><strong>Status:</strong> {{ appUserData.active ? 'Active' : 'Inactive' }}</p>
+    } @else {
+      <p>Loading App user data...</p>
+    }
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

@@ -17,3 +17,24 @@
     --mdc-snackbar-container-color: #0288d1;
     --mdc-snackbar-supporting-text-color: white;
 }
+.table-container {
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 60px;
+  color: gray;
+  font-size: 18px;
+}

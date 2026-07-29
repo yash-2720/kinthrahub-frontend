@@ -5,6 +5,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { Dashboard } from './features/dashboard/dashboard/dashboard';
 import { EmployeeList } from './features/employee/employee-list/employee-list/employee-list';
 import { TestComponent } from './features/test/test';
+import { ApplicationUserList } from './features/application-user/application-user-list/application-user-list/application-user-list';
 
 export const routes: Routes = [
 
@@ -29,6 +30,10 @@ export const routes: Routes = [
   },{
     path:'employee-list',
     component: EmployeeList,
+    canActivate: [authGuard]
+  },{
+    path : 'app-user-list',
+    component : ApplicationUserList,
     canActivate: [authGuard]
   },
   {
