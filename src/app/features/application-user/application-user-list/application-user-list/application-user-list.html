@@ -60,7 +60,19 @@
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let user">
         <button mat-raised-button color="primary" (click) = openViewDialog(user.userId)>View</button>
+         
+        <button mat-icon-button (click)="openEditAppUser(user.userId)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="openEditAppUser(user.userId)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </td>
+      <!-- <td mat-cell *matCellDef="let employee">
+        <button mat-icon-button (click)="openViewDialog(employee.employeeId)">
+          <mat-icon>visibility</mat-icon>
+       
+      </td> -->
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -5,7 +5,8 @@ import type { ApplicationUserResponse } from './models/application-user-response
 import type { PageResponse } from '../../core/models/page-response.model';
 import { Observable } from 'rxjs/internal/Observable';
 import type { ApplicationUserRequest } from './models/application-user-request.model';
-import type { UpdateApplicationUser } from './update-application-user-list/update-application-user/update-application-user';
+// import type { UpdateApplicationUser } from './update-application-user-list/update-application-user/update-application-user';
+import type { UpdateApplicationUserRequest } from './models/update-application-user-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -62,7 +63,7 @@ getAppUserById(appUserId : string): Observable<ApplicationUserResponse>{
     return this.http.get<ApplicationUserResponse>(`${this.APPUSER_API}/getUserById/${appUserId}`);
   }
 
-updateAppUserById(appUserId : string, request : UpdateApplicationUser):Observable<ApplicationUserResponse>{
+updateApplicationUser(appUserId : string, request : UpdateApplicationUserRequest):Observable<ApplicationUserResponse>{
   return this.http.put<ApplicationUserResponse>(`${this.APPUSER_API}/updateApplicationUser/${appUserId}`, request);
 }
 }

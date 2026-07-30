@@ -16,7 +16,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApplicationUserViewDialog } from '../../components/application-user-view-dialog/application-user-view-dialog';
-
+// import { UpdateApplicationUser } from '../../update-application-user-list/update-application-user/update-application-user';
+import { UpdateApplicationUserDialog } from '../../update-application-user-list/update-application-user/update-application-user-dialog';
 @Component({
   selector: 'app-application-user-list',
   imports: [
@@ -124,12 +125,11 @@ export class ApplicationUserList implements OnInit {
     });
   }
     openEditAppUser(userId: string): void {
-      const dialogRef = this.dialog.open(ApplicationUserViewDialog, {
+      const dialogRef = this.dialog.open(UpdateApplicationUserDialog, {
         width: '750px',
         maxWidth: '90vw',
         disableClose: true,
         data: {
-          mode: 'edit',
           userId: userId,
         },
       });
