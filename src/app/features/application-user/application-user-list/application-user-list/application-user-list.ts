@@ -18,6 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApplicationUserViewDialog } from '../../components/application-user-view-dialog/application-user-view-dialog';
 // import { UpdateApplicationUser } from '../../update-application-user-list/update-application-user/update-application-user';
 import { UpdateApplicationUserDialog } from '../../update-application-user-list/update-application-user/update-application-user-dialog';
+import { ApplicationUserDeleteDialog } from '../../components/application-user-delete-dialog/application-user-delete-dialog/application-user-delete-dialog';
 @Component({
   selector: 'app-application-user-list',
   imports: [
@@ -124,20 +125,37 @@ export class ApplicationUserList implements OnInit {
       }
     });
   }
-    openEditAppUser(userId: string): void {
-      const dialogRef = this.dialog.open(UpdateApplicationUserDialog, {
-        width: '750px',
-        maxWidth: '90vw',
-        disableClose: true,
-        data: {
-          userId: userId,
-        },
-      });
-  
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          this.loadAppUsers();
-        }
-      });
-    }
+  openEditAppUser(userId: string): void {
+    const dialogRef = this.dialog.open(UpdateApplicationUserDialog, {
+      width: '750px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: {
+        userId: userId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadAppUsers();
+      }
+    });
+  }
+
+  openDeleteDialog(userId: string): void {
+    const dialogRef = this.dialog.open(ApplicationUserDeleteDialog, {
+      width: '750px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: {
+        userId: userId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadAppUsers();
+      }
+    });
+  }
 }

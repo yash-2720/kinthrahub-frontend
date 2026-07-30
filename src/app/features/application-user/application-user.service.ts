@@ -66,4 +66,7 @@ getAppUserById(appUserId : string): Observable<ApplicationUserResponse>{
 updateApplicationUser(appUserId : string, request : UpdateApplicationUserRequest):Observable<ApplicationUserResponse>{
   return this.http.put<ApplicationUserResponse>(`${this.APPUSER_API}/updateApplicationUser/${appUserId}`, request);
 }
+deleteApplicationUser(appUserId: string): Observable<ApplicationUserResponse> {
+    return this.http.delete<ApplicationUserResponse>(`${this.APPUSER_API}/deleteApplicationUser/${appUserId}`);
+}
 }
