@@ -12,6 +12,9 @@ import type { UpdateApplicationUserRequest } from './models/update-application-u
   providedIn: 'root',
 })
 export class ApplicationUserService {
+  // createApplicationUser(request: ApplicationUserRequest) {
+  //   throw new Error('Method not implemented.');
+  // }
   private readonly APPUSER_API = `${environment.apiUrl}/applicationUser`;
   constructor(private http: HttpClient) {}
 
@@ -68,5 +71,12 @@ updateApplicationUser(appUserId : string, request : UpdateApplicationUserRequest
 }
 deleteApplicationUser(appUserId: string): Observable<ApplicationUserResponse> {
     return this.http.delete<ApplicationUserResponse>(`${this.APPUSER_API}/deleteApplicationUser/${appUserId}`);
+}
+// addEmployee(employeeRequest: EmployeeRequest): Observable<EmployeeResponse> {
+//     return this.http.post<EmployeeResponse>(`${this.EMPLOYEE_API}/addEmployee`, employeeRequest);
+//   }
+
+createApplicationUser(request : ApplicationUserRequest) : Observable<ApplicationUserResponse>{
+  return this.http.post<ApplicationUserResponse>(`${this.APPUSER_API}/addNewUser`,request);
 }
 }

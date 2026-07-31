@@ -13,9 +13,15 @@
 
   Add Employee
 </button>
+@if(isLoading){
+<div class="loading-container" >
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+}
 
-@if (employees && employees.length > 0) {
+@else if (employees && employees.length > 0) {
   <h1>{{ employees.length }} Employees Found</h1>
+  
 
   <table mat-table [dataSource]="employees" class="mat-elevation-z8">
     <!-- Employee ID -->
@@ -58,6 +64,19 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="User Id">
+      <th mat-header-cell *matHeaderCellDef>User Id</th>
+      <td mat-cell *matCellDef="let employee">
+        @if (employee.applicationUserCreated) {
+          <!-- True Block -->
+          <span> Created </span>
+        } @else {
+          <!-- False (Else) Block -->
+         <button mat-raised-button color="primary" (click)="openAddAppUser(employee)"> Not created </button>
+        }
+      </td>
+    </ng-container>
+
     <!-- Actions -->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -82,6 +101,7 @@
 
   <mat-paginator
     [length]="totalElements"
+    [pageIndex]="page"
     [pageSize]="size"
     [pageSizeOptions]="[5, 10, 20]"
     (page)="onPageChange($event)"

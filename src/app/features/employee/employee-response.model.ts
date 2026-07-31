@@ -14,4 +14,6 @@ export interface EmployeeResponse {
 
     active: boolean;
 
+    applicationUserCreated: boolean;
+
 }

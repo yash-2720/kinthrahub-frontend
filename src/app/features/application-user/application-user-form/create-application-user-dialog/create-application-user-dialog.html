@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>Create Application User</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="createUserForm">
+    <!-- Employee ID -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Employee ID</mat-label>
+      <input matInput [value]="data.employeeId" readonly />
+    </mat-form-field>
+
+    <!-- Employee Name -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Employee Name</mat-label>
+      <input matInput [value]="data.employeeName" readonly />
+    </mat-form-field>
+
+    <!-- Username -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Username</mat-label>
+
+      <input matInput formControlName="username" autocomplete="off" />
+
+      @if (
+        createUserForm.get('username')?.hasError('required') &&
+        createUserForm.get('username')?.touched
+      ) {
+        <mat-error> Username is required. </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Role -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Role</mat-label>
+
+      <mat-select formControlName="roleId">
+        @for (role of roles; track role.roleId) {
+          <mat-option [value]="role.roleId">
+            {{ role.roleName }}
+          </mat-option>
+        }
+      </mat-select>
+
+      @if (
+        createUserForm.get('roleId')?.hasError('required') && createUserForm.get('roleId')?.touched
+      ) {
+        <mat-error> Role is required. </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Password -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+
+      <input matInput type="password" formControlName="password" />
+
+      @if (
+        createUserForm.get('password')?.hasError('required') &&
+        createUserForm.get('password')?.touched
+      ) {
+        <mat-error> Password is required. </mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    type="button"
+    [disabled]="createUserForm.invalid || isLoading"
+    (click)="createApplicationUser()"
+  >
+    @if (isLoading) {
+      <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+      Create User
+    }
+  </button>
+</mat-dialog-actions>

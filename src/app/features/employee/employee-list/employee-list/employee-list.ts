@@ -19,8 +19,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeViewDialog } from '../../components/employee-view-dialog/employee-view-dialog';
 import { EmployeeDeleteDialog } from '../../components/employee-delete-dialog/employee-delete-dialog';
-import type { EmployeeRequest } from '../../employee-request.model';
+import  { EmployeeRequest } from '../../employee-request.model';
 import { EmployeeForm } from '../../employee-form/employee-form/employee-form';
+import { CreateApplicationUserDialog } from '../../../application-user/application-user-form/create-application-user-dialog/create-application-user-dialog';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import  { SnackbarService } from '../../../../shared/services/snackbar.service';
 
 @Component({
   selector: 'app-employee-list',
@@ -39,7 +42,8 @@ import { EmployeeForm } from '../../employee-form/employee-form/employee-form';
     MatIconModule,
     MatTooltipModule,
     FormsModule,
-  ],
+    MatProgressSpinnerModule
+],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.css',
 })
@@ -48,6 +52,7 @@ export class EmployeeList implements OnInit {
     private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
+    private snackbar : SnackbarService
   ) {}
 
   employees: EmployeeResponse[] = [];
@@ -61,13 +66,13 @@ export class EmployeeList implements OnInit {
   search = '';
 
   active = true;
-
+isLoading = false;
   displayedColumns: string[] = [
     'employeeId',
     'employeeNumber',
     'employeeName',
     'employeeEmail',
-    'employeePhoneNumber',
+    'employeePhoneNumber','User Id',
     'actions',
   ];
 
@@ -78,6 +83,9 @@ export class EmployeeList implements OnInit {
   }
 
   loadEmployees(): void {
+
+    this.isLoading = true;
+    console.log('Loading page:', this.page);
     const request = this.search.trim()
       ? this.employeeService.searchEmployees(this.page, this.size, this.search, this.active)
       : this.employeeService.getAllEmployees(this.page, this.size, this.search, this.active);
@@ -85,13 +93,20 @@ export class EmployeeList implements OnInit {
     request.subscribe({
       next: (response) => {
         this.employees = response.content;
+          console.log(response.content);
         this.totalElements = response.totalElements;
+        this.isLoading = false;
+          console.log(this.employees);
         this.cdr.detectChanges();
-      },
+      },error:(error)=>{
+        this.snackbar.error(error.error?.message);
+        this.isLoading = false;
+      }
     });
   }
 
   onPageChange(event: PageEvent): void {
+     console.log('Page Event:', event);
     this.page = event.pageIndex;
 
     this.size = event.pageSize;
@@ -155,4 +170,19 @@ export class EmployeeList implements OnInit {
       }
     });
   }
+
+ openAddAppUser(employee: EmployeeResponse): void {
+  const dialogRef = this.dialog.open(CreateApplicationUserDialog, {
+    width: '750px',
+    maxWidth: '90vw',
+    disableClose: true,
+    data: employee
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.loadEmployees();
+    }
+  });
+}
 }
