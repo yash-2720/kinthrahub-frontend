@@ -1,12 +1,75 @@
 .full-width {
   width: 100%;
+  margin-bottom: 10px;
+}
+
+/* ---------------------- */
+/* Dialog */
+/* ---------------------- */
+
+mat-dialog-title {
+  margin: 0;
+  padding: 24px 32px 0 32px;
+  font-size: 32px;
+  font-weight: 600;
 }
 
 mat-dialog-content {
-  min-width: 450px;
-  padding-top: 10px;
+  min-width: 650px;
+  padding: 24px 32px !important;
+  overflow: hidden;
 }
 
 mat-dialog-actions {
-  padding: 16px 0;
+  padding: 16px 32px 24px 32px;
+  margin: 0;
+}
+
+/* ---------------------- */
+/* Employee Information */
+/* ---------------------- */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  margin-bottom: 28px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  color: #757575;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.value {
+  color: #212121;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ---------------------- */
+/* Form */
+/* ---------------------- */
+
+mat-form-field {
+  margin-bottom: 8px;
+}
+
+/* ---------------------- */
+/* Buttons */
+/* ---------------------- */
+
+mat-dialog-actions button {
+  min-width: 110px;
+}
+
+mat-spinner {
+  margin: 0 auto;
 }
