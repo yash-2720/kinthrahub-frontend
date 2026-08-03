@@ -1,5 +1,52 @@
-<form [formGroup]="loginForm">
-    <input type="text" formControlName="username" placeholder="Username">
-    <input type="password" formControlName="password" placeholder="Password">
-    <button type="submit" (click)="login()">Login</button>
-</form> 
+<div class="login-container">
+
+    <mat-card class="login-card">
+
+        <h1>KinthraHub</h1>
+
+        <p class="subtitle">
+            Employee Giving Platform
+        </p>
+
+        <form [formGroup]="loginForm">
+
+            <mat-form-field appearance="outline" class="full-width">
+
+                <mat-label>Username</mat-label>
+
+                <input
+                    matInput
+                    formControlName="username">
+
+                <mat-icon matSuffix>person</mat-icon>
+
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+
+                <mat-label>Password</mat-label>
+
+                <input
+                    matInput
+                    type="password"
+                    formControlName="password">
+
+                <mat-icon matSuffix>lock</mat-icon>
+
+            </mat-form-field>
+
+            <button
+                mat-raised-button
+                color="primary"
+                class="full-width"
+                (click)="login()">
+
+                Login
+
+            </button>
+
+        </form>
+
+    </mat-card>
+
+</div>

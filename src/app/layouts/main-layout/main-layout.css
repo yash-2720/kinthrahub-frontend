@@ -103,6 +103,7 @@ mat-sidenav {
 
 }
 
+
 mat-icon {
 
     color: #fafcff;
@@ -114,3 +115,11 @@ a {
     height: 52px;
 
 }
+
+/* .expanded{
+    width:240px;
+}
+
+.collapsed{
+    width:80px;
+} */

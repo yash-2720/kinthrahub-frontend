@@ -22,6 +22,11 @@
 
 
 <mat-sidenav-container class="container">
+    <!-- <mat-sidenav
+    mode="side"
+    opened
+    [class.expanded]="isExpanded"
+    [class.collapsed]="!isExpanded"> -->
 
     <mat-sidenav
         mode="side"
@@ -136,7 +141,12 @@
     <mat-sidenav-content>
 
         <div class="content">
-
+             <!-- <div
+            style="
+                background:red;
+                width:100%;
+                height:100px;
+            "></div> -->
             <router-outlet></router-outlet>
 
         </div>

@@ -1,0 +1,84 @@
+/* .login-container{
+
+    height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#f5f7fa;
+
+} */
+ .login-container {
+
+    height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: linear-gradient(
+        135deg,
+        #1565C0,
+        #42A5F5
+    );
+
+}
+
+.login-card{
+
+    width:420px;
+
+    padding:40px;
+
+    border-radius:16px;
+
+    background:white;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.18);
+    
+     border-top:6px solid #1565C0;
+
+}
+/* .login-card{
+
+    width:420px;
+
+    padding:32px;
+
+} */
+
+.full-width{
+
+    width:100%;
+
+    margin-bottom:20px;
+
+}
+
+h1{
+
+    /* text-align:center; */
+      font-size: 48px;
+    font-weight: 700;
+
+    margin-bottom:8px;
+
+    color:#1565C0;
+
+}
+
+.subtitle{
+
+    /* text-align:center; */
+ font-size:18px;
+    color:gray;
+
+    margin-bottom:30px;
+
+}
