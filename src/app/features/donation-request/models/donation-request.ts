@@ -1,4 +1,4 @@
-import type { DonationType } from "../enums/donation-type.enum";
+import { DonationType } from "../enums/donation-type.enum";
 
 export interface DonationRequest {
   employeeId: string;  
