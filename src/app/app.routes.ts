@@ -81,6 +81,7 @@ import { ProtectedPage } from './features/test/protected-page/protected-page';
 import { TestComponent } from './features/test/test';
 
 import { MainLayout } from './layouts/main-layout/main-layout';
+import { DonationRequest } from './features/donation-request/donation-request-component/donation-request/donation-request';
 
 export const routes: Routes = [
 
@@ -117,6 +118,9 @@ export const routes: Routes = [
       {
         path: 'app-user-list',
         component: ApplicationUserList
+      },{
+        path:'donation-request',
+        component : DonationRequest
       },
 
       // Temporary pages
