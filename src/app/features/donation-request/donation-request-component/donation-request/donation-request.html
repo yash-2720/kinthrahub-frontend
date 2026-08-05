@@ -1,88 +1,13 @@
-<div class="page-container">
-  <div class="page-header">
-    <h2>Donate</h2>
+<p>donation-request wo current Step</p>
+<p>Current Step = {{ currentSteps }}</p>
+@if(currentSteps === 0){
+    <p>Inside if block</p>
+    <app-select-donation-plans (plansSelected)="onPlansSelected($event)"></app-select-donation-plans>
+}
+@if (currentSteps === 1) {
+    <p>Donation Request Step 2</p>
+}
 
-    <p>Search for a hospital or donation plan and choose where you'd like to contribute.</p>
-  </div>
-
-  <!-- Search -->
-
-  <div class="search-container">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search Hospital / Donation Plan</mat-label>
-
-      <!-- <input
-        matInput
-        [(ngModel)]="search"
-        (keyup.enter)="onSearch()"
-        placeholder="Search..." /> -->
-
-      <input matInput [(ngModel)]="search" (input)="searchSubject.next(search)" />
-      <!-- <input
-        matInput
-        [(ngModel)]="search"
-        (input)="onSearch()"
-        placeholder="Search Hospital / Donation Plan"
-      /> -->
-
-      <button mat-icon-button matSuffix (click)="onSearch()">
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-
-  <!-- Hospital Cards -->
-
-  <mat-card class="hospital-card" *ngFor="let hospital of hospitals">
-    <mat-card-header>
-      <div mat-card-avatar class="hospital-avatar">
-        <mat-icon>local_hospital</mat-icon>
-      </div>
-
-      <mat-card-title>
-        {{ hospital.hospitalName }}
-      </mat-card-title>
-
-      <mat-card-subtitle>
-        {{ hospital.hospitalId }}
-      </mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-      <p class="hospital-description">
-        {{ hospital.hospitalDescription }}
-      </p>
-
-      <div class="donation-plan-section">
-        <h4>Donation Plans</h4>
-
-        @if (donationPlansMap.get(hospital.hospitalId); as donationPlans) {
-          @for (plan of donationPlans; track plan.donationPlanId) {
-            <mat-checkbox>
-              {{ plan.donationName }}
-            </mat-checkbox>
-          }
-        }
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Empty State -->
-
-  <div class="empty-state" *ngIf="hospitals.length === 0">
-    <mat-icon> search_off </mat-icon>
-
-    <p>No hospitals found.</p>
-  </div>
-
-  <!-- Pagination -->
-
-  <mat-paginator
-    [length]="totalElements"
-    [pageSize]="size"
-    [pageIndex]="page"
-    [pageSizeOptions]="[2, 5, 10, 20]"
-    (page)="onPageChange($event)"
-  >
-  </mat-paginator>
-</div>
+@if(currentSteps === 2) {
+    <p>Donation Request Step 3</p>
+}

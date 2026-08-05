@@ -1,0 +1,147 @@
+.page-container {
+
+    padding: 24px;
+
+}
+
+.page-header {
+
+    margin-bottom: 24px;
+
+}
+
+.page-header h2 {
+
+    margin: 0;
+
+    font-size: 32px;
+
+    font-weight: 600;
+
+}
+
+.page-header p {
+
+    margin-top: 8px;
+
+    color: #666;
+
+}
+
+.search-container {
+
+    margin-bottom: 24px;
+
+}
+
+.search-field {
+
+    width: 100%;
+
+}
+
+.hospital-card {
+
+    margin-bottom: 24px;
+
+    border-radius: 12px;
+
+}
+
+.hospital-avatar {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.hospital-avatar mat-icon {
+
+    font-size: 28px;
+
+    width: 28px;
+
+    height: 28px;
+
+    color: #1976d2;
+
+}
+
+.hospital-description {
+
+    margin-top: 16px;
+
+    margin-bottom: 20px;
+
+    color: #555;
+
+}
+
+.donation-plan-section {
+
+    margin-top: 16px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid #e0e0e0;
+
+}
+
+.donation-plan-section h4 {
+
+    margin: 0 0 16px;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+}
+
+.donation-plan-section mat-checkbox {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+}
+
+.empty-state {
+
+    text-align: center;
+
+    padding: 48px;
+
+    color: gray;
+
+}
+
+.empty-state mat-icon {
+
+    font-size: 60px;
+
+    width: 60px;
+
+    height: 60px;
+
+    margin-bottom: 16px;
+
+}
+
+mat-paginator {
+
+    margin-top: 24px;
+
+}
+
+.action-buttons{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    margin-top:24px;
+
+}
