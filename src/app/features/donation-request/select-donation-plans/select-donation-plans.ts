@@ -61,10 +61,10 @@ export class SelectDonationPlans implements OnInit {
 
   donationPlansMap = new Map<string, DonationPlanResponse[]>();
 
-   
+  selectedPlans = new Map<string, DonationPlanResponse>();
+
   @Output()
   plansSelected = new EventEmitter<DonationWorkflowItem[]>();
-
 
   constructor(
     private donationRequestService: DonationRequestService,
@@ -107,9 +107,9 @@ export class SelectDonationPlans implements OnInit {
         this.hospitals = response.content;
         this.totalElements = response.totalElements;
 
-        this.hospitals.forEach(hospital => {
-        this.loadDonationPlans(hospital.hospitalId);
-    });
+        this.hospitals.forEach((hospital) => {
+          this.loadDonationPlans(hospital.hospitalId);
+        });
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -153,9 +153,34 @@ export class SelectDonationPlans implements OnInit {
   }
 
   goToConfiguration(): void {
+    console.log('Next clicked');
+    // this.plansSelected.emit([]);
+    this.emitSelectedPlans();
+  }
 
-    console.log("Next clicked");
-    this.plansSelected.emit([]);
+  emitSelectedPlans():void{
+    const workFlowItem  = Array.from(this.selectedPlans.values()).map((plan) => {
+      return{
+        hospitalId : plan.hospitalId,
+        hospitalName : plan.hospitalName,
+        donationPlanId : plan.donationPlanId,
+        donationName : plan.donationName,
+      }
+    });
+    this.plansSelected.emit(workFlowItem);
+  }
 
-}
+  onPlansSelectionChange(donationPlan : DonationPlanResponse, checked : boolean):void{
+    if(checked){
+      this.selectedPlans.set(donationPlan.donationPlanId, donationPlan);
+      console.log("Selected Donation Plans :", this.selectedPlans);
+    } else {
+      this.selectedPlans.delete(donationPlan.donationPlanId);
+      console.log("Selected Donation Plans :", this.selectedPlans);
+    }
+  }
+
+   isPlanSelected(planid : string):boolean{
+    return this.selectedPlans.has(planid); 
+  }
 }

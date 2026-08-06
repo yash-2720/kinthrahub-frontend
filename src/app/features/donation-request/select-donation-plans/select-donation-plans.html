@@ -58,7 +58,9 @@
 
         @if (donationPlansMap.get(hospital.hospitalId); as donationPlans) {
           @for (plan of donationPlans; track plan.donationPlanId) {
-            <mat-checkbox>
+            <mat-checkbox
+            [checked] = "isPlanSelected(plan.donationPlanId)"
+              (change) = "onPlansSelectionChange(plan, $event.checked)">
               {{ plan.donationName }}
             </mat-checkbox>
           }
