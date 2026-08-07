@@ -2,11 +2,12 @@ import { Component,  ChangeDetectorRef} from '@angular/core';
 import type { DonationWorkflowItem } from '../../models/donation-workflow-item';
 import { SelectDonationPlans } from "../../select-donation-plans/select-donation-plans";
 import { CommonModule } from '@angular/common';
+import { ConfigureDonations } from "../../configure-donations/configure-donations/configure-donations";
 // import { DonationWorkFlowItem};
 
 @Component({
   selector: 'app-donation-request',
-  imports: [SelectDonationPlans, CommonModule],
+  imports: [SelectDonationPlans, CommonModule, ConfigureDonations],
   templateUrl: './donation-request.html',
   styleUrl: './donation-request.css',
 })

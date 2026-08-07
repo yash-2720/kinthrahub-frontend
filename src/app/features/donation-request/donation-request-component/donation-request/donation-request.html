@@ -5,7 +5,9 @@
     <app-select-donation-plans (plansSelected)="onPlansSelected($event)"></app-select-donation-plans>
 }
 @if (currentSteps === 1) {
-    <p>Donation Request Step 2</p>
+    <app-configure-donations
+    
+    [donationWorkflowItems]="donationWorkflowItems"></app-configure-donations>
 }
 
 @if(currentSteps === 2) {
