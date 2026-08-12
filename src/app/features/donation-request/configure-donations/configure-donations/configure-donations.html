@@ -1,2 +1,36 @@
-<p>configure-donations works!</p>
-<h1> STEP 2</h1>
+<form [formGroup]="configureDonationForms">
+  <div formArrayName="donations">
+    @for (donation of donations.controls; track $index) {
+      <div [formGroupName]="$index" class="donation-card">
+        <h3>
+          {{ donation.get('hospitalName')?.value }}
+        </h3>
+
+        <p>
+          {{ donation.get('donationName')?.value }}
+        </p>
+        <mat-radio-group formControlName="donationType">
+          <mat-radio-button [value]="DonationType.RECURRING"> Recurring </mat-radio-button>
+          <mat-radio-button [value]="DonationType.ONE_TIME"> One Time </mat-radio-button>
+        </mat-radio-group>
+        @if (isDonationTypeRecurring($index)) {
+          <div class="recurring-donation-fields">
+            <label for="recurringFrequency">Recurring Frequency:</label>
+            <input type="date" formControlName="donationStartDate" placeholder="Start Date" />
+            <input type="date" formControlName="donationEndDate" placeholder="End Date" />
+            <span>Leave end date blank for indefinite recurrence</span>
+          </div>
+        }
+        @if (
+          donation.get('donationStartDate')?.invalid && donation.get('donationStartDate')?.touched
+        ) {
+          <span>Start date is required.</span>
+        }
+      </div>
+      <!-- <mat-date-range-input>
+  <input matStartDate placeholder="Start date">
+  <input matEndDate placeholder="End date">
+</mat-date-range-input> -->
+    }
+  </div>
+</form>
