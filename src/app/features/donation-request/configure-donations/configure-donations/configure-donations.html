@@ -9,6 +9,20 @@
         <p>
           {{ donation.get('donationName')?.value }}
         </p>
+        <label for="donationAmount">Donation Amount:</label>
+        <input type="number" formControlName="donationAmount" placeholder="Enter amount" />
+        @if(donation.get('donationAmount')?.invalid && donation.get('donationAmount')?.touched) {
+          @if(donation.get('donationAmount')?.errors?.['required']) {
+            <span>Donation amount is required.</span>
+          }
+          @if(donation.get('donationAmount')?.errors?.['min']) {
+            <span>Donation amount must be at least 500.</span>
+          }
+          @if(donation.get('donationAmount')?.errors?.['pattern']) {
+            <span>Donation amount must be a valid number.</span>
+          }
+          
+        }
         <mat-radio-group formControlName="donationType">
           <mat-radio-button [value]="DonationType.RECURRING"> Recurring </mat-radio-button>
           <mat-radio-button [value]="DonationType.ONE_TIME"> One Time </mat-radio-button>
