@@ -1,7 +1,21 @@
+<h1>Employee Information</h1>
+<p>Employee ID: {{ employeeId }}</p>
+<p>Basic Salary: {{ basicSalary }}</p>
 <form [formGroup]="configureDonationForms">
+  @if (configureDonationForms.errors?.['insufficientRemainingSalary']) {
+    <div class="donation-salary-error">
+      Total donation amount exceeds the allowed amount. Please adjust your donation amounts.
+    </div>
+  }
   <div formArrayName="donations">
     @for (donation of donations.controls; track $index) {
-      <div [formGroupName]="$index" class="donation-card">
+      <div
+        [formGroupName]="$index"
+        class="donation-card"
+        [class.donation-card-invalid]="
+          configureDonationForms.errors?.['insufficientRemainingSalary']
+        "
+      >
         <h3>
           {{ donation.get('hospitalName')?.value }}
         </h3>
@@ -11,17 +25,16 @@
         </p>
         <label for="donationAmount">Donation Amount:</label>
         <input type="number" formControlName="donationAmount" placeholder="Enter amount" />
-        @if(donation.get('donationAmount')?.invalid && donation.get('donationAmount')?.touched) {
-          @if(donation.get('donationAmount')?.errors?.['required']) {
+        @if (donation.get('donationAmount')?.invalid && donation.get('donationAmount')?.touched) {
+          @if (donation.get('donationAmount')?.errors?.['required']) {
             <span>Donation amount is required.</span>
           }
-          @if(donation.get('donationAmount')?.errors?.['min']) {
+          @if (donation.get('donationAmount')?.errors?.['min']) {
             <span>Donation amount must be at least 500.</span>
           }
-          @if(donation.get('donationAmount')?.errors?.['pattern']) {
+          @if (donation.get('donationAmount')?.errors?.['pattern']) {
             <span>Donation amount must be a valid number.</span>
           }
-          
         }
         <mat-radio-group formControlName="donationType">
           <mat-radio-button [value]="DonationType.RECURRING"> Recurring </mat-radio-button>
@@ -48,3 +61,18 @@
     }
   </div>
 </form>
+<div class="action-buttons">
+  <!-- @if(configureDonationForms.errors?.['insufficientRemainingSalary'] || configureDonationForms.invalid){} -->
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="
+      configureDonationForms.errors?.['insufficientRemainingSalary'] ||
+      configureDonationForms.invalid
+    "
+    (click)="goToNextStep()"
+  >
+    Next
+  </button>
+  <button mat-raised-button color="primary" (click)="goToPreviousStep()">Previous</button>
+</div>

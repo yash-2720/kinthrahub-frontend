@@ -5,3 +5,13 @@
   margin-bottom: 16px;
   background: #fff;
 }
+
+.donation-card-invalid {
+  border: 2px solid red;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
