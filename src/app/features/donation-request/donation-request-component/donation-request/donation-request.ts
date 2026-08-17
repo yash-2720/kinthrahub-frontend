@@ -3,6 +3,7 @@ import type { DonationWorkflowItem } from '../../models/donation-workflow-item';
 import { SelectDonationPlans } from "../../select-donation-plans/select-donation-plans";
 import { CommonModule } from '@angular/common';
 import { ConfigureDonations } from "../../configure-donations/configure-donations/configure-donations";
+import type { DonationRequest } from '../../models/donation-request';
 // import { DonationWorkFlowItem};
 
 @Component({
@@ -11,11 +12,12 @@ import { ConfigureDonations } from "../../configure-donations/configure-donation
   templateUrl: './donation-request.html',
   styleUrl: './donation-request.css',
 })
-export class DonationRequest {
+export class DonationRequestComponent {
   constructor(private cdr: ChangeDetectorRef) {}
 
   currentSteps = 0;
   donationWorkflowItems :  DonationWorkflowItem[] = [];
+  donationRequests : DonationRequest[] = [];
  
   goToNextStep():void{
     this.currentSteps++;
@@ -31,6 +33,12 @@ export class DonationRequest {
     // alert("Parent received event");
     console.log("From parent component : ",items);
     this.donationWorkflowItems = items;
+    this.goToNextStep();
+  }
+
+  onConfigureDonations(donations: DonationRequest[]):void{
+    console.log("Donation Requests : ", donations);
+    this.donationRequests = donations;
     this.goToNextStep();
   }
 

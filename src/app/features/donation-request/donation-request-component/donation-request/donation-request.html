@@ -7,7 +7,10 @@
 @if (currentSteps === 1) {
     <app-configure-donations
     
-    [donationWorkflowItems]="donationWorkflowItems"></app-configure-donations>
+    [donationWorkflowItems]="donationWorkflowItems"
+    (donationsConfigured) = "onConfigureDonations( $event)"
+    (previousRequested)="goToPreviousStep()"
+    ></app-configure-donations>
 }
 
 @if(currentSteps === 2) {

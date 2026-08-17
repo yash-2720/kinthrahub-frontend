@@ -1,4 +1,4 @@
-import { Component, Input, OnInit,  ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { DonationWorkflowItem } from '../../models/donation-workflow-item';
 import {
   FormBuilder,
@@ -6,8 +6,8 @@ import {
   ReactiveFormsModule,
   Validators,
   ValidationErrors,
-  type AbstractControl,
-  type FormArray,
+  AbstractControl,
+  FormArray,
   FormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -29,6 +29,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DonationRequest } from '../../models/donation-request';
 
 @Component({
   selector: 'app-configure-donations',
@@ -61,17 +62,23 @@ export class ConfigureDonations implements OnInit {
   DonationType = DonationType;
   basicSalary: number = 0;
   employeeId: string = '';
-    currentSteps = 1;
+  
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   @Input()
   donationWorkflowItems: DonationWorkflowItem[] = [];
 
   configureDonationForms!: FormGroup;
+
+  @Output()
+  donationsConfigured = new EventEmitter<DonationRequest[]>();
+
+  @Output()
+  previousRequested = new EventEmitter<void>();
 
   ngOnInit(): void {
     // console.log('From child component : ', this.donationWorkflowItems);
@@ -123,18 +130,21 @@ export class ConfigureDonations implements OnInit {
           [Validators.required, Validators.min(500), Validators.pattern(/^[0-9]+$/)],
         ],
         donationType: [DonationType.ONE_TIME],
-        donationStartDate: [''],
+        donationStartDate: [new Date().toISOString().substring(0, 10)],
         donationEndDate: [''],
         description: [''],
       });
       donationForm.get('donationType')?.valueChanges.subscribe((value) => {
         if (value === DonationType.RECURRING) {
+          donationForm.get('donationStartDate')?.setValue('');
           donationForm.get('donationStartDate')?.setValidators([Validators.required]);
           donationForm.get('donationStartDate')?.updateValueAndValidity();
           // donationForm.get('donationEndDate')?.setValidators([Validators.required]);
         } else {
+          donationForm
+            .get('donationStartDate')
+            ?.setValue(new Date().toISOString().substring(0, 10));
           donationForm.get('donationStartDate')?.clearValidators();
-          donationForm.get('donationStartDate')?.setValue('');
           donationForm.get('donationEndDate')?.setValue(null);
           donationForm.get('donationStartDate')?.updateValueAndValidity();
         }
@@ -168,19 +178,38 @@ export class ConfigureDonations implements OnInit {
       donationAmount += Number(donations.at(i).get('donationAmount')?.value);
     }
     if (donationAmount + 5000 >= basicSalary) {
-      console.log('Error', this.configureDonationForms.errors,' ', donationAmount);
+      console.log('Error', this.configureDonationForms.errors, ' ', donationAmount);
       return { insufficientRemainingSalary: true };
     }
     return null;
   }
 
-    goToNextStep():void{
-    this.currentSteps++;
-    this.cdr.detectChanges();
+  goToNextStep(): void {
+    if (this.configureDonationForms.invalid) {
+      return;
+    }
+
+    const donationRequests: DonationRequest[] = this.donations.controls.map((donation) => {
+      // create DonationRequest here
+      const donationRequest: DonationRequest = {
+        employeeId: this.employeeId,
+        donationPlanId: donation.get('donationPlanId')?.value,
+        donationType: donation.get('donationType')?.value,
+        donationAmount: Number(donation.get('donationAmount')?.value),
+        donationStartDate: donation.get('donationStartDate')?.value,
+        donationEndDate: donation.get('donationEndDate')?.value || null,
+      };
+      return donationRequest;
     
+    });
+    console.log("Donation Requests : ", donationRequests);
+    this.donationsConfigured.emit(donationRequests);
+    
+    this.cdr.detectChanges();
   }
-  goToPreviousStep():void{
-    this.currentSteps--;
+  goToPreviousStep(): void {
+    this.previousRequested.emit();
+    
     this.cdr.detectChanges();
   }
 }
