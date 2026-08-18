@@ -92,6 +92,7 @@
     <button
         mat-raised-button
         color="primary"
+        [disabled] = !hasSelectedPlans
         (click)="goToConfiguration()">
 
         Next

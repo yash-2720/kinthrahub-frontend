@@ -1,18 +1,28 @@
 <p>donation-request wo current Step</p>
 <p>Current Step = {{ currentSteps }}</p>
-@if(currentSteps === 0){
-    <p>Inside if block</p>
-    <app-select-donation-plans (plansSelected)="onPlansSelected($event)"></app-select-donation-plans>
+@if (currentSteps === 0) {
+  <p>Inside if block</p>
+  <app-select-donation-plans
+    [selectedDonationPlans]="donationWorkflowItems"
+    (plansSelected)="onPlansSelected($event)"
+  ></app-select-donation-plans>
 }
 @if (currentSteps === 1) {
-    <app-configure-donations
-    
+  <app-configure-donations
     [donationWorkflowItems]="donationWorkflowItems"
-    (donationsConfigured) = "onConfigureDonations( $event)"
+    (donationsConfigured)="onConfigureDonations($event)"
     (previousRequested)="goToPreviousStep()"
-    ></app-configure-donations>
+  ></app-configure-donations>
 }
 
-@if(currentSteps === 2) {
-    <p>Donation Request Step 3</p>
+@if (currentSteps === 2) {
+  <app-review-submit
+    [donationWorkflowItems]="donationWorkflowItems"
+    (editRequested)="editDonations()"
+    (removeRequested)="removeDonation($event)"
+    (submitRequested)="submitDonations()"
+  >
+  </app-review-submit>
+
+  <p>Donation Request Step 3</p>
 }

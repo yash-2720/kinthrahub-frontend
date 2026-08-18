@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, type OnInit, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  ChangeDetectorRef,
+  type OnInit,
+  EventEmitter,
+  Output,
+  Input,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -66,6 +73,11 @@ export class SelectDonationPlans implements OnInit {
   @Output()
   plansSelected = new EventEmitter<DonationWorkflowItem[]>();
 
+  @Input()
+  selectedDonationPlans: DonationWorkflowItem[] = [];
+
+  selectedPlanIds = new Set<string>();
+
   constructor(
     private donationRequestService: DonationRequestService,
     private donationPlanService: DonationPlanService,
@@ -90,6 +102,8 @@ export class SelectDonationPlans implements OnInit {
         this.loadHospitals();
         this.cdr.detectChanges();
       });
+
+    this.selectedPlanIds = new Set(this.selectedDonationPlans.map((item) => item.donationPlanId));
   }
 
   loadHospitals(): void {
@@ -120,6 +134,26 @@ export class SelectDonationPlans implements OnInit {
     });
   }
 
+  // loadDonationPlans(hospitalId: string): void {
+  //   if (this.donationPlansMap.has(hospitalId)) {
+  //     return;
+  //   }
+
+  //   this.donationPlanService.getDonationPlansByHospital(hospitalId, true).subscribe({
+  //     next: (response) => {
+  //       this.donationPlansMap.set(hospitalId, response);
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: (error) => {
+  //       console.error('Error loading donation plans:', error);
+  //       this.snackbar.error(
+  //         error?.error?.message || 'An error occurred while loading donation plans.',
+  //       );
+  //       this.cdr.detectChanges();
+  //     },
+  //   });
+  // }
+
   loadDonationPlans(hospitalId: string): void {
     if (this.donationPlansMap.has(hospitalId)) {
       return;
@@ -128,13 +162,23 @@ export class SelectDonationPlans implements OnInit {
     this.donationPlanService.getDonationPlansByHospital(hospitalId, true).subscribe({
       next: (response) => {
         this.donationPlansMap.set(hospitalId, response);
+
+        response.forEach((plan) => {
+          if (this.selectedPlanIds.has(plan.donationPlanId)) {
+            this.selectedPlans.set(plan.donationPlanId, plan);
+          }
+        });
+
         this.cdr.detectChanges();
       },
+
       error: (error) => {
         console.error('Error loading donation plans:', error);
+
         this.snackbar.error(
           error?.error?.message || 'An error occurred while loading donation plans.',
         );
+
         this.cdr.detectChanges();
       },
     });
@@ -155,32 +199,50 @@ export class SelectDonationPlans implements OnInit {
   goToConfiguration(): void {
     console.log('Next clicked');
     // this.plansSelected.emit([]);
+    if (!this.hasSelectedPlans) {
+    return;
+  }
     this.emitSelectedPlans();
   }
 
-  emitSelectedPlans():void{
-    const workFlowItem  = Array.from(this.selectedPlans.values()).map((plan) => {
-      return{
-        hospitalId : plan.hospitalId,
-        hospitalName : plan.hospitalName,
-        donationPlanId : plan.donationPlanId,
-        donationName : plan.donationName,
-      }
+  emitSelectedPlans(): void {
+    const workFlowItem = Array.from(this.selectedPlans.values()).map((plan) => {
+      return {
+        hospitalId: plan.hospitalId,
+        hospitalName: plan.hospitalName,
+        donationPlanId: plan.donationPlanId,
+        donationName: plan.donationName,
+      };
     });
     this.plansSelected.emit(workFlowItem);
   }
 
-  onPlansSelectionChange(donationPlan : DonationPlanResponse, checked : boolean):void{
-    if(checked){
+  // onPlansSelectionChange(donationPlan: DonationPlanResponse, checked: boolean): void {
+  //   if (checked) {
+  //     this.selectedPlans.set(donationPlan.donationPlanId, donationPlan);
+  //     console.log('Selected Donation Plans :', this.selectedPlans);
+  //   } else {
+  //     this.selectedPlans.delete(donationPlan.donationPlanId);
+  //     console.log('Selected Donation Plans :', this.selectedPlans);
+  //   }
+  // }
+
+  onPlansSelectionChange(donationPlan: DonationPlanResponse, checked: boolean): void {
+    if (checked) {
+      this.selectedPlanIds.add(donationPlan.donationPlanId);
+
       this.selectedPlans.set(donationPlan.donationPlanId, donationPlan);
-      console.log("Selected Donation Plans :", this.selectedPlans);
     } else {
+      this.selectedPlanIds.delete(donationPlan.donationPlanId);
+
       this.selectedPlans.delete(donationPlan.donationPlanId);
-      console.log("Selected Donation Plans :", this.selectedPlans);
     }
   }
+  isPlanSelected(planid: string): boolean {
+    return this.selectedPlanIds.has(planid);
+  }
 
-   isPlanSelected(planid : string):boolean{
-    return this.selectedPlans.has(planid); 
+  get hasSelectedPlans(): boolean {
+    return this.selectedPlanIds.size > 0;
   }
 }

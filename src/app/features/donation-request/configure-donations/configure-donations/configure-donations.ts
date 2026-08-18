@@ -62,7 +62,7 @@ export class ConfigureDonations implements OnInit {
   DonationType = DonationType;
   basicSalary: number = 0;
   employeeId: string = '';
-  
+
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
@@ -74,8 +74,11 @@ export class ConfigureDonations implements OnInit {
 
   configureDonationForms!: FormGroup;
 
+  // @Output()
+  // donationsConfigured = new EventEmitter<DonationRequest[]>();
+
   @Output()
-  donationsConfigured = new EventEmitter<DonationRequest[]>();
+  donationsConfigured = new EventEmitter<DonationWorkflowItem[]>();
 
   @Output()
   previousRequested = new EventEmitter<void>();
@@ -118,41 +121,145 @@ export class ConfigureDonations implements OnInit {
     });
   }
 
-  private initializeDonationForms(): void {
-    this.donationWorkflowItems.forEach((item) => {
-      const donationForm = this.fb.group({
-        hospitalId: [item.hospitalId],
-        hospitalName: [item.hospitalName],
-        donationPlanId: [item.donationPlanId],
-        donationName: [item.donationName],
-        donationAmount: [
-          '',
-          [Validators.required, Validators.min(500), Validators.pattern(/^[0-9]+$/)],
-        ],
-        donationType: [DonationType.ONE_TIME],
-        donationStartDate: [new Date().toISOString().substring(0, 10)],
-        donationEndDate: [''],
-        description: [''],
-      });
-      donationForm.get('donationType')?.valueChanges.subscribe((value) => {
+  // private initializeDonationForms(): void {
+  //   this.donationWorkflowItems.forEach((item) => {
+  //     const donationForm = this.fb.group({
+  //       hospitalId: [item.hospitalId],
+  //       hospitalName: [item.hospitalName],
+  //       donationPlanId: [item.donationPlanId],
+  //       donationName: [item.donationName],
+  //       donationAmount: [
+  //         '',
+  //         [Validators.required, Validators.min(500), Validators.pattern(/^[0-9]+$/)],
+  //       ],
+  //       donationType: [DonationType.ONE_TIME],
+  //       donationStartDate: [new Date().toISOString().substring(0, 10)],
+  //       donationEndDate: [''],
+  //       description: [''],
+  //     });
+  //     donationForm.get('donationType')?.valueChanges.subscribe((value) => {
+  //       if (value === DonationType.RECURRING) {
+  //         donationForm.get('donationStartDate')?.setValue('');
+  //         donationForm.get('donationStartDate')?.setValidators([Validators.required]);
+  //         donationForm.get('donationStartDate')?.updateValueAndValidity();
+  //         // donationForm.get('donationEndDate')?.setValidators([Validators.required]);
+  //       } else {
+  //         donationForm
+  //           .get('donationStartDate')
+  //           ?.setValue(new Date().toISOString().substring(0, 10));
+  //         donationForm.get('donationStartDate')?.clearValidators();
+  //         donationForm.get('donationEndDate')?.setValue(null);
+  //         donationForm.get('donationStartDate')?.updateValueAndValidity();
+  //       }
+  //     });
+
+  //     this.donations.push(donationForm);
+  //   });
+  // }
+
+private initializeDonationForms(): void {
+
+  this.donationWorkflowItems.forEach((item) => {
+
+    const donationType =
+      item.donationType ?? DonationType.ONE_TIME;
+
+    const donationForm = this.fb.group({
+
+      hospitalId: [item.hospitalId],
+
+      hospitalName: [item.hospitalName],
+
+      donationPlanId: [item.donationPlanId],
+
+      donationName: [item.donationName],
+
+      donationAmount: [
+        item.donationAmount ?? '',
+        [
+          Validators.required,
+          Validators.min(500),
+          Validators.pattern(/^[0-9]+$/)
+        ]
+      ],
+
+      donationType: [donationType],
+
+      donationStartDate: [
+        item.donationStartDate ??
+        new Date().toISOString().substring(0, 10)
+      ],
+
+      donationEndDate: [
+        item.donationEndDate ?? null
+      ],
+
+      description: [''],
+
+    });
+
+    // Configure initial validation state
+    if (donationType === DonationType.RECURRING) {
+
+      donationForm
+        .get('donationStartDate')
+        ?.setValidators([Validators.required]);
+
+    } else {
+
+      donationForm
+        .get('donationStartDate')
+        ?.clearValidators();
+
+    }
+
+    donationForm
+      .get('donationStartDate')
+      ?.updateValueAndValidity();
+
+    // Listen for future user changes
+    donationForm
+      .get('donationType')
+      ?.valueChanges
+      .subscribe((value) => {
+
         if (value === DonationType.RECURRING) {
-          donationForm.get('donationStartDate')?.setValue('');
-          donationForm.get('donationStartDate')?.setValidators([Validators.required]);
-          donationForm.get('donationStartDate')?.updateValueAndValidity();
-          // donationForm.get('donationEndDate')?.setValidators([Validators.required]);
-        } else {
+
           donationForm
             .get('donationStartDate')
-            ?.setValue(new Date().toISOString().substring(0, 10));
-          donationForm.get('donationStartDate')?.clearValidators();
-          donationForm.get('donationEndDate')?.setValue(null);
-          donationForm.get('donationStartDate')?.updateValueAndValidity();
+            ?.setValue('');
+
+          donationForm
+            .get('donationStartDate')
+            ?.setValidators([Validators.required]);
+
+        } else {
+
+          donationForm
+            .get('donationStartDate')
+            ?.setValue(
+              new Date().toISOString().substring(0, 10)
+            );
+
+          donationForm
+            .get('donationStartDate')
+            ?.clearValidators();
+
+          donationForm
+            .get('donationEndDate')
+            ?.setValue(null);
         }
+
+        donationForm
+          .get('donationStartDate')
+          ?.updateValueAndValidity();
+
       });
 
-      this.donations.push(donationForm);
-    });
-  }
+    this.donations.push(donationForm);
+
+  });
+}
 
   isDonationTypeRecurring(index: number): boolean {
     const donationForm = this.donations.at(index);
@@ -184,32 +291,55 @@ export class ConfigureDonations implements OnInit {
     return null;
   }
 
+  // goToNextStep(): void {
+  //   if (this.configureDonationForms.invalid) {
+  //     return;
+  //   }
+
+  //   const donationRequests: DonationRequest[] = this.donations.controls.map((donation) => {
+  //     // create DonationRequest here
+  //     const donationRequest: DonationRequest = {
+  //       employeeId: this.employeeId,
+  //       donationPlanId: donation.get('donationPlanId')?.value,
+  //       donationType: donation.get('donationType')?.value,
+  //       donationAmount: Number(donation.get('donationAmount')?.value),
+  //       donationStartDate: donation.get('donationStartDate')?.value,
+  //       donationEndDate: donation.get('donationEndDate')?.value || null,
+  //     };
+  //     return donationRequest;
+
+  //   });
+  //   console.log("Donation Requests : ", donationRequests);
+  //   this.donationsConfigured.emit(donationRequests);
+
+  //   this.cdr.detectChanges();
+  // }
   goToNextStep(): void {
     if (this.configureDonationForms.invalid) {
       return;
     }
 
-    const donationRequests: DonationRequest[] = this.donations.controls.map((donation) => {
-      // create DonationRequest here
-      const donationRequest: DonationRequest = {
-        employeeId: this.employeeId,
-        donationPlanId: donation.get('donationPlanId')?.value,
-        donationType: donation.get('donationType')?.value,
-        donationAmount: Number(donation.get('donationAmount')?.value),
-        donationStartDate: donation.get('donationStartDate')?.value,
-        donationEndDate: donation.get('donationEndDate')?.value || null,
-      };
-      return donationRequest;
-    
-    });
-    console.log("Donation Requests : ", donationRequests);
-    this.donationsConfigured.emit(donationRequests);
-    
-    this.cdr.detectChanges();
+    const configuredItems: DonationWorkflowItem[] = this.donationWorkflowItems.map(
+      (item, index) => {
+        const donation = this.donations.at(index);
+
+        return {
+          ...item,
+          donationAmount: Number(donation.get('donationAmount')?.value),
+          donationType: donation.get('donationType')?.value,
+          donationStartDate: donation.get('donationStartDate')?.value,
+          donationEndDate: donation.get('donationEndDate')?.value || null,
+        };
+      },
+    );
+
+    console.log('Configured Donation Workflow Items:', configuredItems);
+
+    this.donationsConfigured.emit(configuredItems);
   }
   goToPreviousStep(): void {
     this.previousRequested.emit();
-    
+
     this.cdr.detectChanges();
   }
 }

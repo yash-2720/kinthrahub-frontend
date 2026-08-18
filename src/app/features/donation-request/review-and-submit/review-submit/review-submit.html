@@ -1,1 +1,54 @@
-<p>review-submit works!</p>
+<h1>Review Donation</h1>
+
+@if (donationWorkflowItems.length === 0) {
+  <p>No donation requests found.</p>
+} @else {
+  @for (donation of donationWorkflowItems; track donation.donationPlanId) {
+    <mat-card class="donation-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ donation.donationName }}
+        </mat-card-title>
+
+        <mat-card-subtitle>
+          {{ donation.hospitalName }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>
+          <strong>Amount:</strong>
+          ₹{{ donation.donationAmount }}
+        </p>
+
+        <p>
+          <strong>Type:</strong>
+          {{ donation.donationType }}
+        </p>
+
+        <p>
+          <strong>Start Date:</strong>
+          {{ donation.donationStartDate }}
+        </p>
+
+        @if (donation.donationEndDate) {
+          <p>
+            <strong>End Date:</strong>
+            {{ donation.donationEndDate }}
+          </p>
+        }
+        <button mat-raised-button color="warn" (click)="removeDonation(donation.donationPlanId)">
+          Remove
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+  <button mat-raised-button color="primary" (click)="editDonation()">Edit</button>
+  <button
+  mat-raised-button
+  color="primary"
+  [disabled]="donationWorkflowItems.length === 0"
+  (click)="submitDonation()">
+  Submit
+</button>
+}
