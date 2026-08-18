@@ -1,78 +1,218 @@
-<h1>Employee Information</h1>
-<p>Employee ID: {{ employeeId }}</p>
-<p>Basic Salary: {{ basicSalary }}</p>
-<form [formGroup]="configureDonationForms">
+<div class="configure-page">
+    <!-- Section heading -->
+  <div class="section-heading">
+    <div>
+      <h2>Configure Your Donations</h2>
+
+      <p>Choose an amount and donation type for each selected plan.</p>
+    </div>
+
+    <span class="donation-count">
+      {{ donations.length }}
+      donation{{ donations.length === 1 ? '' : 's' }}
+    </span>
+  </div>
+  <!-- Employee Information -->
+  <mat-card class="employee-card">
+    <mat-card-header>
+      <mat-card-title> Employee Information </mat-card-title>
+
+      <!-- <mat-card-subtitle> Donation eligibility </mat-card-subtitle> -->
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="employee-info">
+        <!-- <div class="info-item">
+          <span class="info-label">Employee ID</span>
+          <span class="info-value">
+            {{ employeeId }}
+          </span>
+        </div> -->
+
+        <div class="info-item">
+          <span class="info-label">Basic Salary</span>
+          <span class="info-value"> ₹{{ basicSalary | number: '1.0-0' }} </span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Overall salary validation -->
   @if (configureDonationForms.errors?.['insufficientRemainingSalary']) {
     <div class="donation-salary-error">
-      Total donation amount exceeds the allowed amount. Please adjust your donation amounts.
+      <mat-icon>error_outline</mat-icon>
+
+      <span>
+        Total donation amount exceeds the allowed amount. Please adjust your donation amounts.
+      </span>
     </div>
   }
-  <div formArrayName="donations">
-    @for (donation of donations.controls; track $index) {
-      <div
-        [formGroupName]="$index"
-        class="donation-card"
-        [class.donation-card-invalid]="
-          configureDonationForms.errors?.['insufficientRemainingSalary']
-        "
-      >
-        <h3>
-          {{ donation.get('hospitalName')?.value }}
-        </h3>
 
-        <p>
-          {{ donation.get('donationName')?.value }}
-        </p>
-        <label for="donationAmount">Donation Amount:</label>
-        <input type="number" formControlName="donationAmount" placeholder="Enter amount" />
-        @if (donation.get('donationAmount')?.invalid && donation.get('donationAmount')?.touched) {
-          @if (donation.get('donationAmount')?.errors?.['required']) {
-            <span>Donation amount is required.</span>
-          }
-          @if (donation.get('donationAmount')?.errors?.['min']) {
-            <span>Donation amount must be at least 500.</span>
-          }
-          @if (donation.get('donationAmount')?.errors?.['pattern']) {
-            <span>Donation amount must be a valid number.</span>
-          }
-        }
-        <mat-radio-group formControlName="donationType">
-          <mat-radio-button [value]="DonationType.RECURRING"> Recurring </mat-radio-button>
-          <mat-radio-button [value]="DonationType.ONE_TIME"> One Time </mat-radio-button>
-        </mat-radio-group>
-        @if (isDonationTypeRecurring($index)) {
-          <div class="recurring-donation-fields">
-            <label for="recurringFrequency">Recurring Frequency:</label>
-            <input type="date" formControlName="donationStartDate" placeholder="Start Date" />
-            <input type="date" formControlName="donationEndDate" placeholder="End Date" />
-            <span>Leave end date blank for indefinite recurrence</span>
-          </div>
-        }
-        @if (
-          donation.get('donationStartDate')?.invalid && donation.get('donationStartDate')?.touched
-        ) {
-          <span>Start date is required.</span>
-        }
-      </div>
-      <!-- <mat-date-range-input>
-  <input matStartDate placeholder="Start date">
-  <input matEndDate placeholder="End date">
-</mat-date-range-input> -->
-    }
+
+
+  <form [formGroup]="configureDonationForms">
+    <div formArrayName="donations">
+      @for (donation of donations.controls; track donation.get('donationPlanId')?.value) {
+        <mat-card
+          class="donation-card"
+          [class.donation-card-invalid]="
+            configureDonationForms.errors?.['insufficientRemainingSalary']
+          "
+          [formGroupName]="$index"
+        >
+          <!-- Donation Plan Header -->
+          <mat-card-header>
+            <div mat-card-avatar class="plan-icon">
+              <mat-icon>volunteer_activism</mat-icon>
+            </div>
+
+            <mat-card-title>
+              {{ donation.get('donationName')?.value }}
+            </mat-card-title>
+
+            <mat-card-subtitle>
+              {{ donation.get('hospitalName')?.value }}
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-divider></mat-divider>
+
+          <mat-card-content>
+            <!-- Donation Amount -->
+            <div class="form-section">
+              <label class="section-label"> Donation Amount </label>
+
+              <mat-button-toggle-group
+                formControlName="amountOption"
+                class="amount-options"
+                (change)="onAmountOptionChange($index, $event.value)"
+                aria-label="Donation amount"
+              >
+                <mat-button-toggle value="500"> ₹500 </mat-button-toggle>
+
+                <mat-button-toggle value="1000"> ₹1,000 </mat-button-toggle>
+
+                <mat-button-toggle value="5000"> ₹5,000 </mat-button-toggle>
+
+                <mat-button-toggle value="custom"> Custom </mat-button-toggle>
+              </mat-button-toggle-group>
+
+              <!-- Custom Amount -->
+              @if (donation.get('amountOption')?.value === 'custom') {
+                <mat-form-field appearance="outline" class="amount-field">
+                  <mat-label> Custom amount </mat-label>
+
+                  <span matTextPrefix>₹&nbsp;</span>
+
+                  <input
+                    matInput
+                    type="number"
+                    formControlName="donationAmount"
+                    placeholder="Enter amount"
+                  />
+
+                  @if (donation.get('donationAmount')?.hasError('required')) {
+                    <mat-error> Donation amount is required. </mat-error>
+                  }
+
+                  @if (donation.get('donationAmount')?.hasError('min')) {
+                    <mat-error> Donation amount must be at least ₹500. </mat-error>
+                  }
+
+                  @if (donation.get('donationAmount')?.hasError('pattern')) {
+                    <mat-error> Donation amount must be a whole number. </mat-error>
+                  }
+                </mat-form-field>
+              } @else {
+                <div class="selected-amount">
+                  Selected amount:
+                  <strong> ₹{{ donation.get('donationAmount')?.value }} </strong>
+                </div>
+              }
+            </div>
+
+            <!-- Donation Type -->
+            <div class="form-section">
+              <label class="section-label"> Donation Type </label>
+
+              <mat-radio-group formControlName="donationType" class="donation-type-group">
+                <mat-radio-button [value]="DonationType.ONE_TIME"> One Time </mat-radio-button>
+
+                <mat-radio-button [value]="DonationType.RECURRING"> Recurring </mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <!-- Recurring Donation -->
+            @if (isDonationTypeRecurring($index)) {
+              <div class="recurring-section">
+                <div class="recurring-heading">
+                  <mat-icon> event_repeat </mat-icon>
+
+                  <div>
+                    <strong> Recurring Donation </strong>
+
+                    <span> Choose when the recurring donation begins and ends. </span>
+                  </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="date-fields">
+                  <!-- Start Date -->
+                  <div class="date-input-group">
+                    <label> Start Date </label>
+
+                    <div class="date-input-wrapper">
+                      <input type="date" formControlName="donationStartDate" />
+                    </div>
+
+                    @if (
+                      donation.get('donationStartDate')?.invalid &&
+                      donation.get('donationStartDate')?.touched
+                    ) {
+                      <span class="field-error"> Start date is required. </span>
+                    }
+                  </div>
+
+                  <!-- End Date -->
+                  <div class="date-input-group">
+                    <label> End Date </label>
+
+                    <div class="date-input-wrapper">
+                      <input type="date" formControlName="donationEndDate" />
+                    </div>
+                  </div>
+                </div>
+
+                <p class="date-hint">Leave the end date blank for indefinite recurrence.</p>
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  </form>
+
+  <!-- Navigation -->
+  <div class="action-buttons">
+    <button mat-stroked-button type="button" (click)="goToPreviousStep()">
+      <mat-icon> arrow_back </mat-icon>
+
+      Previous
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="
+        configureDonationForms.errors?.['insufficientRemainingSalary'] ||
+        configureDonationForms.invalid
+      "
+      (click)="goToNextStep()"
+    >
+      Next
+
+      <mat-icon> arrow_forward </mat-icon>
+    </button>
   </div>
-</form>
-<div class="action-buttons">
-  <!-- @if(configureDonationForms.errors?.['insufficientRemainingSalary'] || configureDonationForms.invalid){} -->
-  <button
-    mat-raised-button
-    color="primary"
-    [disabled]="
-      configureDonationForms.errors?.['insufficientRemainingSalary'] ||
-      configureDonationForms.invalid
-    "
-    (click)="goToNextStep()"
-  >
-    Next
-  </button>
-  <button mat-raised-button color="primary" (click)="goToPreviousStep()">Previous</button>
 </div>

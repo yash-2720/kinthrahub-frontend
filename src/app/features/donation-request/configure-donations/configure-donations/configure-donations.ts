@@ -30,7 +30,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DonationRequest } from '../../models/donation-request';
-
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDividerModule } from '@angular/material/divider';
 @Component({
   selector: 'app-configure-donations',
   imports: [
@@ -54,6 +55,8 @@ import { DonationRequest } from '../../models/donation-request';
     MatProgressSpinnerModule,
     MatCardModule,
     MatCheckboxModule,
+    MatButtonToggleModule,
+    MatDividerModule
   ],
   templateUrl: './configure-donations.html',
   styleUrl: './configure-donations.css',
@@ -174,6 +177,10 @@ private initializeDonationForms(): void {
 
       donationName: [item.donationName],
 
+       amountOption: [
+    this.getAmountOption(item.donationAmount)
+  ],
+
       donationAmount: [
         item.donationAmount ?? '',
         [
@@ -260,7 +267,44 @@ private initializeDonationForms(): void {
 
   });
 }
+private getAmountOption(amount?: number): string {
 
+  if (amount === 500) {
+    return '500';
+  }
+
+  if (amount === 1000) {
+    return '1000';
+  }
+
+  if (amount === 5000) {
+    return '5000';
+  }
+
+  return 'custom';
+}
+
+onAmountOptionChange(index: number, option: string): void {
+
+  const donation = this.donations.at(index) as FormGroup;
+
+  if (option === '500') {
+
+    donation.get('donationAmount')?.setValue(500);
+
+  } else if (option === '1000') {
+
+    donation.get('donationAmount')?.setValue(1000);
+
+  } else if (option === '5000') {
+
+    donation.get('donationAmount')?.setValue(5000);
+
+  }
+
+  donation.get('donationAmount')?.markAsTouched();
+  donation.get('donationAmount')?.updateValueAndValidity();
+}
   isDonationTypeRecurring(index: number): boolean {
     const donationForm = this.donations.at(index);
     if (donationForm.get('donationType')?.value === DonationType.RECURRING) {

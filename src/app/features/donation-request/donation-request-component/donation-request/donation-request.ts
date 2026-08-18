@@ -8,11 +8,16 @@ import { ReviewSubmit } from '../../review-and-submit/review-submit/review-submi
 import { EmployeeService } from '../../../employee/employee.service';
 import { DonationRequestService } from '../../donation-request.service';
 import { SnackbarService } from '../../../../shared/services/snackbar.service';
+import { forkJoin } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DonationSubmitSuccess } from '../../donation-request-success-modal/donation-submit-success/donation-submit-success';
+import  { Router } from '@angular/router';
+
 // import { DonationWorkFlowItem};
 
 @Component({
   selector: 'app-donation-request',
-  imports: [SelectDonationPlans, CommonModule, ConfigureDonations, ReviewSubmit],
+  imports: [SelectDonationPlans, CommonModule, ConfigureDonations, ReviewSubmit, DonationSubmitSuccess],
   templateUrl: './donation-request.html',
   styleUrl: './donation-request.css',
 })
@@ -22,11 +27,14 @@ export class DonationRequestComponent {
     private employeeService: EmployeeService,
     private donationRequestService: DonationRequestService,
     private snackbar: SnackbarService,
+    private dialog: MatDialog,
+      private router: Router,
   ) {}
 
   currentSteps = 0;
   donationWorkflowItems: DonationWorkflowItem[] = [];
   donationRequests: DonationRequest[] = [];
+  isSubmitting = false;
 
   goToNextStep(): void {
     this.currentSteps++;
@@ -66,13 +74,23 @@ export class DonationRequestComponent {
   }
 
   submitDonations(): void {
-    if (this.donationWorkflowItems.length === 0) {
-      return;
-    }
 
-    this.employeeService.getCurrentEmployee().subscribe({
-      next: (employee) => {
-        const donationRequests: DonationRequest[] = this.donationWorkflowItems.map((item) => {
+  if (
+    this.donationWorkflowItems.length === 0 ||
+    this.isSubmitting
+  ) {
+    return;
+  }
+
+  this.isSubmitting = true;
+
+  this.employeeService.getCurrentEmployee().subscribe({
+
+    next: (employee) => {
+
+      const donationRequests: DonationRequest[] =
+        this.donationWorkflowItems.map((item) => {
+
           return {
             employeeId: employee.employeeId,
             donationPlanId: item.donationPlanId,
@@ -81,26 +99,71 @@ export class DonationRequestComponent {
             donationStartDate: item.donationStartDate!,
             donationEndDate: item.donationEndDate ?? null,
           };
+
         });
 
-        donationRequests.forEach((request) => {
-          this.donationRequestService.createDonationRequest(request).subscribe({
-            next: (response) => {
-              console.log('Donation request created:', response);
-              this.snackbar.success('Donation request submitted successfully.');
-            },
+      const requests = donationRequests.map((request) =>
+        this.donationRequestService.createDonationRequest(request)
+      );
 
-            error: (error) => {
-              console.error('Error creating donation request:', error);
-              this.snackbar.error(error?.error?.message || 'Failed to submit donation request.');
-            },
-          });
-        });
-      },
+      forkJoin(requests).subscribe({
 
-      error: (error) => {
-         this.snackbar.error(error?.error?.message || 'Failed to Fetch  Current Employee.');
-      },
-    });
-  }
+        next: (responses) => {
+
+          console.log('All donation requests submitted:', responses);
+
+          this.isSubmitting = false;
+
+          this.openSuccessDialog();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error submitting donation requests:',
+            error
+          );
+
+          this.isSubmitting = false;
+
+          this.snackbar.error(
+            error?.error?.message ||
+            'Failed to submit donation request.'
+          );
+
+        },
+
+      });
+
+    },
+
+    error: (error) => {
+
+      console.error(
+        'Error fetching current employee:',
+        error
+      );
+
+      this.isSubmitting = false;
+
+      this.snackbar.error(
+        error?.error?.message ||
+        'Unable to retrieve employee information.'
+      );
+
+    },
+
+  });
+}
+openSuccessDialog(): void {
+
+ const dialogRef = this.dialog.open(DonationSubmitSuccess, {
+    width: '420px',
+    disableClose: true,
+  });
+  dialogRef.afterClosed().subscribe(() => {
+    this.router.navigate(['/dashboard']);
+  });
+}
 }

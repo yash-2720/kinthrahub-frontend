@@ -1,0 +1,41 @@
+.success-dialog {
+  text-align: center;
+  padding: 30px 36px;
+  min-width: 320px;
+}
+
+.success-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-bottom: 16px;
+}
+
+.success-icon mat-icon {
+  width: 64px;
+  height: 64px;
+
+  font-size: 64px;
+
+  color: #16a34a;
+}
+
+.success-dialog h2 {
+  margin: 0 0 10px;
+
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.success-dialog p {
+  margin: 0 0 24px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.success-dialog button {
+  min-width: 100px;
+}

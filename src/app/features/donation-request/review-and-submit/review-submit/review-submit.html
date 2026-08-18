@@ -1,54 +1,191 @@
-<h1>Review Donation</h1>
+<div class="review-page">
+  <!-- Page Header -->
+  <div class="review-header">
+    <div>
+      <h1>Review Your Donations</h1>
 
-@if (donationWorkflowItems.length === 0) {
-  <p>No donation requests found.</p>
-} @else {
-  @for (donation of donationWorkflowItems; track donation.donationPlanId) {
-    <mat-card class="donation-card">
-      <mat-card-header>
-        <mat-card-title>
-          {{ donation.donationName }}
-        </mat-card-title>
+      <p>Review your donation details before submitting your request.</p>
+    </div>
 
-        <mat-card-subtitle>
-          {{ donation.hospitalName }}
-        </mat-card-subtitle>
-      </mat-card-header>
+    @if (donationWorkflowItems.length > 0) {
+      <div class="donation-count">
+        {{ donationWorkflowItems.length }}
+        donation{{ donationWorkflowItems.length === 1 ? '' : 's' }}
+      </div>
+    }
+  </div>
 
+  <!-- Empty State -->
+  @if (donationWorkflowItems.length === 0) {
+    <mat-card class="empty-card">
       <mat-card-content>
-        <p>
-          <strong>Amount:</strong>
-          ₹{{ donation.donationAmount }}
-        </p>
+        <mat-icon class="empty-icon"> volunteer_activism </mat-icon>
 
-        <p>
-          <strong>Type:</strong>
-          {{ donation.donationType }}
-        </p>
+        <h2>No donation requests</h2>
 
-        <p>
-          <strong>Start Date:</strong>
-          {{ donation.donationStartDate }}
-        </p>
+        <p>You haven't selected any donation plans. Go back and select at least one plan.</p>
 
-        @if (donation.donationEndDate) {
-          <p>
-            <strong>End Date:</strong>
-            {{ donation.donationEndDate }}
-          </p>
-        }
-        <button mat-raised-button color="warn" (click)="removeDonation(donation.donationPlanId)">
-          Remove
+        <button mat-stroked-button color="primary" (click)="editDonation()">
+          <mat-icon> arrow_back </mat-icon>
+
+          Select Donations
         </button>
       </mat-card-content>
     </mat-card>
+  } @else {
+    <!-- Donation Cards -->
+    <div class="donation-list">
+      @for (donation of donationWorkflowItems; track donation.donationPlanId) {
+        <mat-card class="donation-card">
+          <!-- Card Header -->
+          <mat-card-header>
+            <div mat-card-avatar class="donation-icon">
+              <mat-icon> volunteer_activism </mat-icon>
+            </div>
+
+            <mat-card-title>
+              {{ donation.donationName }}
+            </mat-card-title>
+
+            <mat-card-subtitle>
+              {{ donation.hospitalName }}
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-divider></mat-divider>
+
+          <mat-card-content>
+            <div class="donation-details">
+              <!-- Amount -->
+              <div class="detail-item">
+                <span class="detail-label"> Donation Amount </span>
+
+                <span class="detail-value amount">
+                  ₹{{ donation.donationAmount | number: '1.0-0' }}
+                </span>
+              </div>
+
+              <!-- Type -->
+              <div class="detail-item">
+                <span class="detail-label"> Donation Type </span>
+
+                <span class="detail-value">
+                  @if (donation.donationType === 'RECURRING') {
+                    <span class="type-badge recurring">
+                      <mat-icon>autorenew</mat-icon>
+                      Recurring
+                    </span>
+                  } @else {
+                    <span class="type-badge one-time">
+                      <mat-icon>payments</mat-icon>
+                      One Time
+                    </span>
+                  }
+                </span>
+              </div>
+
+              <!-- Start Date -->
+              <div class="detail-item">
+                <span class="detail-label"> Start Date </span>
+
+                <span class="detail-value">
+                  {{ donation.donationStartDate }}
+                </span>
+              </div>
+
+              <!-- End Date -->
+              <div class="detail-item">
+                <span class="detail-label"> End Date </span>
+
+                <span class="detail-value">
+                  @if (donation.donationEndDate) {
+                    {{ donation.donationEndDate }}
+                  } @else {
+                    <span class="not-applicable"> No end date </span>
+                  }
+                </span>
+              </div>
+            </div>
+          </mat-card-content>
+
+          <!-- Card Actions -->
+          <mat-card-actions align="end">
+            <button mat-stroked-button color="primary" (click)="editDonation()">
+              <mat-icon> edit </mat-icon>
+
+              Edit
+            </button>
+
+            <button
+              mat-stroked-button
+              color="warn"
+              (click)="removeDonation(donation.donationPlanId)"
+            >
+              <mat-icon> delete_outline </mat-icon>
+
+              Remove
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+
+    <!-- Bottom Actions -->
+    <mat-card class="submit-card">
+      <mat-card-content>
+        <div class="submit-summary">
+          <div>
+            <span class="summary-label"> Ready to submit </span>
+
+            <span class="summary-text">
+              {{ donationWorkflowItems.length }}
+              donation{{ donationWorkflowItems.length === 1 ? '' : 's' }}
+              selected
+            </span>
+          </div>
+
+          <div class="submit-actions">
+            <button mat-stroked-button type="button" (click)="editDonation()">
+              <mat-icon> arrow_back </mat-icon>
+
+              Previous
+            </button>
+            <!-- 
+
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="donationWorkflowItems.length === 0"
+              (click)="submitDonation()"
+            >
+
+              <mat-icon>
+                send
+              </mat-icon>
+
+              Submit Donation
+
+            </button> -->
+
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="donationWorkflowItems.length === 0 || isSubmitting"
+              (click)="submitDonation()"
+            >
+              @if (isSubmitting) {
+                <mat-spinner diameter="20"></mat-spinner>
+
+                Submitting...
+              } @else {
+                <mat-icon> send </mat-icon>
+
+                Submit Donation
+              }
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   }
-  <button mat-raised-button color="primary" (click)="editDonation()">Edit</button>
-  <button
-  mat-raised-button
-  color="primary"
-  [disabled]="donationWorkflowItems.length === 0"
-  (click)="submitDonation()">
-  Submit
-</button>
-}
+</div>
