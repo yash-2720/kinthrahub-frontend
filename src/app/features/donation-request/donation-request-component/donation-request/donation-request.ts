@@ -17,7 +17,7 @@ import  { Router } from '@angular/router';
 
 @Component({
   selector: 'app-donation-request',
-  imports: [SelectDonationPlans, CommonModule, ConfigureDonations, ReviewSubmit, DonationSubmitSuccess],
+  imports: [SelectDonationPlans, CommonModule, ConfigureDonations, ReviewSubmit],
   templateUrl: './donation-request.html',
   styleUrl: './donation-request.css',
 })
