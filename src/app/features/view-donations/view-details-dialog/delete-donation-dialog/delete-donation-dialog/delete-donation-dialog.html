@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Confirm Cancellation</h2>
+
+<mat-dialog-content>
+
+  <h4>
+    Are you sure you want to cancel this donation request?
+  </h4>
+
+  <p>
+    <strong>Note:</strong>
+    This donation request will be cancelled and will no longer
+    appear as an active donation.
+  </p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+
+  <button
+    mat-button
+    mat-dialog-close>
+    No
+  </button>
+
+  <button
+    mat-raised-button
+    color="warn"
+    (click)="deleteDonation(data.donationRequestId)">
+    Yes, Cancel
+  </button>
+
+</mat-dialog-actions>

@@ -10,6 +10,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, type PageEvent } from '@angular/material/paginator';
+import { MatDialogModule,  MatDialog } from '@angular/material/dialog';
+import { EmployeeViewDialog } from '../../../employee/components/employee-view-dialog/employee-view-dialog';
+import { ViewDetailsDialog } from '../../view-details-dialog/view-details-dialog/view-details-dialog';
+import { DeleteDonationDialog } from '../../view-details-dialog/delete-donation-dialog/delete-donation-dialog/delete-donation-dialog';
 
 @Component({
   selector: 'app-view-my-donations',
@@ -21,6 +25,7 @@ import { MatPaginatorModule, type PageEvent } from '@angular/material/paginator'
     MatInputModule,
     MatPaginatorModule,
     MatIconModule,
+    MatDialogModule
   ],
   templateUrl: './view-my-donations.html',
   styleUrl: './view-my-donations.css',
@@ -38,6 +43,7 @@ export class ViewMyDonations implements OnInit {
     private donationRequestService: DonationRequestService,
     private cdr: ChangeDetectorRef,
     private snackbar: SnackbarService,
+     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -84,4 +90,28 @@ export class ViewMyDonations implements OnInit {
     this.loadDonationRequests();
     this.cdr.detectChanges();
   }
-}
+
+   openViewDialog(donationRequestId: String): void {
+    console.log("Open view dialog clicked");
+      this.dialog.open(ViewDetailsDialog, { data: { donationRequestId: donationRequestId } });
+    }
+
+    //  openDeleteDialog(donationRequestId: String): void {
+    // console.log("Open view dialog clicked");
+    //   this.dialog.open(DeleteDonationDialog, { data: { donationRequestId: donationRequestId } });
+    // }
+
+ openDeleteDialog(donationRequestId: string): void {
+    const dialogRef = this.dialog.open(DeleteDonationDialog, {
+      data: {
+        donationRequestId: donationRequestId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadDonationRequests();
+      }
+    });
+  }
+  }

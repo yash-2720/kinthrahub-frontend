@@ -167,7 +167,7 @@
 
             </button> -->
 
-            <button
+            <!-- <button
               mat-raised-button
               color="primary"
               [disabled]="donationWorkflowItems.length === 0 || isSubmitting"
@@ -181,6 +181,23 @@
                 <mat-icon> send </mat-icon>
 
                 Submit Donation
+              }
+            </button> -->
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="donationWorkflowItems.length === 0 || isSubmitting"
+              (click)="submitDonation()"
+            >
+              @if (isSubmitting) {
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Submitting...</span>
+              } @else {
+                <!-- ngProjectAs ensures Angular knows this block contains the icon slot -->
+                <ng-container ngProjectAs="mat-icon">
+                  <mat-icon>send</mat-icon>
+                  <span>Submit Donation</span>
+                </ng-container>
               }
             </button>
           </div>

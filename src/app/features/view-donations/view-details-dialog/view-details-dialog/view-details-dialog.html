@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Employee Details</h2>
+
+<mat-dialog-content>
+  @if (donationRequest != null) {
+    <p><strong>Donation Request ID:</strong> {{ donationRequest.donationRequestId }}</p>
+    <p><strong>Donation Name:</strong> {{ donationRequest.donationName }}</p>
+    <p><strong>Donation Amount:</strong> {{ donationRequest.donationAmount }}</p>
+    <p><strong>Donation Type :</strong> {{ donationRequest.donationType }}</p>
+    <p><strong>Donation Start Date :</strong> {{ donationRequest.donationStartDate }}</p>
+    @if (donationRequest.donationEndDate != null) {
+      <p><strong>Donation End Date:</strong> {{ donationRequest.donationEndDate }}</p>
+    }
+    <p><strong>Donation Status :</strong> {{ donationRequest.donationStatus }}</p>
+  } @else {
+    <p>Loading employee data...</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

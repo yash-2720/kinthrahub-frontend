@@ -81,21 +81,32 @@
           </mat-card-content>
 
           <mat-card-actions class="card-actions">
-            <button mat-stroked-button color="primary">View Details</button>
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="openViewDialog(donation.donationRequestId)"
+            >
+              View Details
+            </button>
 
-            <button mat-raised-button color="warn">Cancel Donation</button>
+            <button
+              mat-raised-button
+              color="warn"
+              (click)="openDeleteDialog(donation.donationRequestId)"
+            >
+              Cancel Donation
+            </button>
           </mat-card-actions>
         </mat-card>
-        
       }
     </div>
     <mat-paginator
-          [length]="totalElements"
-          [pageSize]="size"
-          [pageIndex]="page"
-          [pageSizeOptions]="[5, 10, 20]"
-          (page)="onPageChange($event)"
-        >
-        </mat-paginator>
+      [length]="totalElements"
+      [pageSize]="size"
+      [pageIndex]="page"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+    >
+    </mat-paginator>
   }
 </div>
