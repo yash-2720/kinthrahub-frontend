@@ -1,0 +1,101 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>My Donations</h1>
+    <p>View and manage your donation requests</p>
+  </div>
+  <div class="search-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Search donations</mat-label>
+
+      <mat-icon matPrefix>search</mat-icon>
+
+      <input
+        matInput
+        [(ngModel)]="search"
+        (ngModelChange)="onSearch()"
+        placeholder="Search by donation name..."
+      />
+
+      @if (search) {
+        <button mat-icon-button matSuffix type="button" (click)="search = ''; onSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+
+  @if (donationRequests.length === 0) {
+    <div class="empty-state">
+      <h2>No Donation Requests</h2>
+      <p>You haven't created any donation requests yet.</p>
+    </div>
+  } @else {
+    <div class="donations-container">
+      @for (donation of donationRequests; track donation.donationRequestId) {
+        <mat-card class="donation-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{ donation.donationName }}
+            </mat-card-title>
+
+            <mat-card-subtitle> Request ID: {{ donation.donationRequestId }} </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="donation-details">
+              <div class="detail-item">
+                <span class="detail-label">Amount</span>
+                <span class="detail-value amount"> ₹{{ donation.donationAmount }} </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Type</span>
+                <span class="detail-value">
+                  {{ donation.donationType }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Status</span>
+                <span class="status-badge">
+                  {{ donation.donationStatus }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Start Date</span>
+                <span class="detail-value">
+                  {{ donation.donationStartDate }}
+                </span>
+              </div>
+
+              @if (donation.donationEndDate) {
+                <div class="detail-item">
+                  <span class="detail-label">End Date</span>
+                  <span class="detail-value">
+                    {{ donation.donationEndDate }}
+                  </span>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions class="card-actions">
+            <button mat-stroked-button color="primary">View Details</button>
+
+            <button mat-raised-button color="warn">Cancel Donation</button>
+          </mat-card-actions>
+        </mat-card>
+        
+      }
+    </div>
+    <mat-paginator
+          [length]="totalElements"
+          [pageSize]="size"
+          [pageIndex]="page"
+          [pageSizeOptions]="[5, 10, 20]"
+          (page)="onPageChange($event)"
+        >
+        </mat-paginator>
+  }
+</div>

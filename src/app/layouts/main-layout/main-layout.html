@@ -1,157 +1,85 @@
 <mat-toolbar color="primary" class="toolbar">
+  <button mat-icon-button (click)="toggleSideNav()">
+    <mat-icon>menu</mat-icon>
+  </button>
 
-    <button
-        mat-icon-button
-        (click)="toggleSideNav()">
+  <span class="title">KinthraHub</span>
 
-        <mat-icon>menu</mat-icon>
+  <span class="toolbar-spacer"></span>
 
-    </button>
-
-    <span class="title">KinthraHub</span>
-
-    <span class="toolbar-spacer"></span>
-
-    <button mat-icon-button>
-
-        <mat-icon>account_circle</mat-icon>
-
-    </button>
-
+  <button mat-icon-button>
+    <mat-icon>account_circle</mat-icon>
+  </button>
 </mat-toolbar>
 
-
 <mat-sidenav-container class="container">
-    <!-- <mat-sidenav
+  <!-- <mat-sidenav
     mode="side"
     opened
     [class.expanded]="isExpanded"
     [class.collapsed]="!isExpanded"> -->
 
-    <mat-sidenav
-        mode="side"
-        opened
-        [style.width.px]="isExpanded ? 240 : 80">
+  <mat-sidenav mode="side" opened [style.width.px]="isExpanded ? 240 : 80">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard">
+        <mat-icon matListItemIcon> dashboard </mat-icon>
 
-        <mat-nav-list>
+        @if (isExpanded) {
+          <span>Dashboard</span>
+        }
+      </a>
 
-            <a
-                mat-list-item
-                routerLink="/dashboard">
+      <a mat-list-item routerLink="/employee-list">
+        <mat-icon matListItemIcon> groups </mat-icon>
 
-                <mat-icon matListItemIcon>
-                    dashboard
-                </mat-icon>
+        @if (isExpanded) {
+          <span>Employees</span>
+        }
+      </a>
 
-                @if(isExpanded){
+      <a mat-list-item routerLink="/app-user-list">
+        <mat-icon matListItemIcon> manage_accounts </mat-icon>
 
-                    <span>Dashboard</span>
+        @if (isExpanded) {
+          <span>Application Users</span>
+        }
+      </a>
 
-                }
+      <a mat-list-item routerLink="/app-donation-request">
+        <mat-icon matListItemIcon> volunteer_activism </mat-icon>
 
-            </a>
+        @if (isExpanded) {
+          <span>Donate</span>
+        }
+      </a>
 
+      <a mat-list-item routerLink="/view-donations">
+        <mat-icon matListItemIcon> receipt_long </mat-icon>
 
-            <a
-                mat-list-item
-                routerLink="/employee-list">
+        @if (isExpanded) {
+          <span>My Donations</span>
+        }
+      </a>
 
-                <mat-icon matListItemIcon>
-                    groups
-                </mat-icon>
+      <a mat-list-item>
+        <mat-icon matListItemIcon> payments </mat-icon>
 
-                @if(isExpanded){
+        @if (isExpanded) {
+          <span>Payroll</span>
+        }
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
 
-                    <span>Employees</span>
-
-                }
-
-            </a>
-
-
-            <a
-                mat-list-item
-                routerLink="/app-user-list">
-
-                <mat-icon matListItemIcon>
-                    manage_accounts
-                </mat-icon>
-
-                @if(isExpanded){
-
-                    <span>Application Users</span>
-
-                }
-
-            </a>
-
-
-            <a
-                mat-list-item
-                routerLink="/app-donation-request">
-
-                <mat-icon matListItemIcon>
-                    volunteer_activism
-                </mat-icon>
-
-                @if(isExpanded){
-
-                    <span>Donate</span>
-
-                }
-
-            </a>
-
-
-            <a
-                mat-list-item>
-
-                <mat-icon matListItemIcon>
-                    receipt_long
-                </mat-icon>
-
-                @if(isExpanded){
-
-                    <span>My Donations</span>
-
-                }
-
-            </a>
-
-
-            <a
-                mat-list-item>
-
-                <mat-icon matListItemIcon>
-                    payments
-                </mat-icon>
-
-                @if(isExpanded){
-
-                    <span>Payroll</span>
-
-                }
-
-            </a>
-
-        </mat-nav-list>
-
-    </mat-sidenav>
-
-
-    <mat-sidenav-content>
-
-        <div class="content">
-             <!-- <div
+  <mat-sidenav-content>
+    <div class="content">
+      <!-- <div
             style="
                 background:red;
                 width:100%;
                 height:100px;
             "></div> -->
-            <router-outlet></router-outlet>
-
-        </div>
-
-    </mat-sidenav-content>
-
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
 </mat-sidenav-container>

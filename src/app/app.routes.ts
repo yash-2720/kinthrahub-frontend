@@ -84,6 +84,7 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 // import { DonationRequest } from './features/donation-request/donation-request-component/select-donation-plam/donation-request';
 import { SelectDonationPlans } from './features/donation-request/select-donation-plans/select-donation-plans';
 import { DonationRequestComponent } from './features/donation-request/donation-request-component/donation-request/donation-request';
+import { ViewMyDonations } from './features/view-donations/view-donations/view-my-donations/view-my-donations';
 
 export const routes: Routes = [
 
@@ -123,6 +124,10 @@ export const routes: Routes = [
       },{
         path:'app-donation-request',
         component : DonationRequestComponent
+      },
+      {
+        path :'view-donations',
+        component : ViewMyDonations
       },
 
       // Temporary pages
