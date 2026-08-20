@@ -85,6 +85,7 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 import { SelectDonationPlans } from './features/donation-request/select-donation-plans/select-donation-plans';
 import { DonationRequestComponent } from './features/donation-request/donation-request-component/donation-request/donation-request';
 import { ViewMyDonations } from './features/view-donations/view-donations/view-my-donations/view-my-donations';
+import { PayrollComponent } from './features/payroll/payroll-component/payroll-component/payroll-component';
 
 export const routes: Routes = [
 
@@ -128,6 +129,10 @@ export const routes: Routes = [
       {
         path :'view-donations',
         component : ViewMyDonations
+      },
+      {
+        path:'payrollrun',
+        component: PayrollComponent
       },
 
       // Temporary pages
