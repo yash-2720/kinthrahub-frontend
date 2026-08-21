@@ -4,7 +4,7 @@ export interface PayrollResponse {
 payrollRunId : string,
 payrollMonth : number,
 payrollYear : number,
-payrollRunStatus : PayrollRunStatus,
+runStatus : PayrollRunStatus,
 processRequests : number,
 skippedRequests : number,
 processedOn : string,

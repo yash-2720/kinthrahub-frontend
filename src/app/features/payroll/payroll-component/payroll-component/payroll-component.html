@@ -1,1 +1,191 @@
-<p>payroll-component works!</p>
+<div class="payroll-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Payroll Management</h1>
+
+      <p>View and manage payroll processing runs</p>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <!-- <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Payroll</mat-label>
+
+      <mat-icon matPrefix>search</mat-icon>
+
+      <input
+        matInput
+        [(ngModel)]="search"
+        (keyup.enter)="onSearch()"
+        placeholder="Search by payroll run, month or year"
+      />
+
+      @if (search) {
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          aria-label="Clear search"
+          (click)="search = ''; onSearch()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field> -->
+
+    <mat-form-field
+  appearance="outline"
+  class="search-field">
+
+  <mat-label>Search Payroll</mat-label>
+
+  <mat-icon matPrefix>search</mat-icon>
+
+  <input
+    matInput
+    [(ngModel)]="search"
+    (ngModelChange)="onSearch()"
+    placeholder="Search by payroll run, month or year"
+  />
+
+  @if (search) {
+
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      aria-label="Clear search"
+      (click)="search = ''; onSearch()">
+
+      <mat-icon>close</mat-icon>
+
+    </button>
+
+  }
+
+</mat-form-field>
+
+    <button mat-raised-button color="primary" class="search-button" (click)="onSearch()">
+      <mat-icon>search</mat-icon>
+
+      Search
+    </button>
+  </div>
+
+  <!-- Payroll Table -->
+  @if (payrollRecords.length > 0) {
+    <div class="payroll-table-card">
+      <table mat-table [dataSource]="payrollRecords" class="payroll-table">
+        <!-- Payroll Run ID -->
+        <ng-container matColumnDef="payrollRunId">
+          <th mat-header-cell *matHeaderCellDef>Payroll Run</th>
+
+          <td mat-cell *matCellDef="let payroll">
+            <strong>
+              {{ payroll.payrollRunId }}
+            </strong>
+          </td>
+        </ng-container>
+
+        <!-- Payroll Period -->
+        <ng-container matColumnDef="payrollPeriod">
+          <th mat-header-cell *matHeaderCellDef>Payroll Period</th>
+
+          <td mat-cell *matCellDef="let payroll">
+            <div class="payroll-period">
+              <span>
+                {{ payroll.payrollMonth }}/{{ payroll.payrollYear }}
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Processed Requests -->
+        <ng-container matColumnDef="processed">
+          <th mat-header-cell *matHeaderCellDef>Processed Requests</th>
+
+          <td mat-cell *matCellDef="let payroll">
+            <span class="processed-count">
+              {{ payroll.processRequests }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Skipped Requests -->
+        <!-- <ng-container matColumnDef="skipped">
+          <th mat-header-cell *matHeaderCellDef>Skipped Requests</th>
+
+          <td mat-cell *matCellDef="let payroll">
+            <span class="skipped-count">
+              {{ payroll.skippedRequests }}
+            </span>
+          </td>
+        </ng-container> -->
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+
+          <td mat-cell *matCellDef="let payroll">
+            <span
+              class="status-badge"
+              [class.status-success]="payroll.payrollRunStatus === 'COMPLETED'"
+              [class.status-failed]="payroll.payrollRunStatus === 'FAILED'"
+            >
+              {{ payroll.runStatus }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Processed On -->
+        <ng-container matColumnDef="processedOn">
+          <th mat-header-cell *matHeaderCellDef>Processed On</th>
+
+          <td mat-cell *matCellDef="let payroll">
+            {{ payroll.processedOn | date: 'dd MMM yyyy, hh:mm a' }}
+          </td>
+        </ng-container>
+
+        <!-- Header -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <!-- Rows -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <!-- Pagination -->
+      <mat-paginator
+        [length]="totalElements"
+        [pageSize]="size"
+        [pageIndex]="page"
+        [pageSizeOptions]="[5, 10, 20]"
+        (page)="onPageChange($event)"
+      >
+      </mat-paginator>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @else {
+    <div class="empty-state">
+      <mat-icon> receipt_long </mat-icon>
+
+      @if (search) {
+        <h2>No Payroll Records Found</h2>
+
+        <p>No payroll records matched your search.</p>
+
+        <button mat-raised-button color="primary" (click)="search = ''; onSearch()">
+          Clear Search
+        </button>
+
+      } @else {
+        <h2>No Payroll Records</h2>
+
+        <p>There are no payroll records available yet.</p>
+      }
+    </div>
+  }
+</div>
