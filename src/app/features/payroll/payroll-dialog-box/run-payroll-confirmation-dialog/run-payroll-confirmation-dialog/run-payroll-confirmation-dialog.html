@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Confirm Payroll Run</h2>
+
+<mat-dialog-content>
+
+  <p>
+    Are you sure you want to run payroll for
+    <strong>
+      {{ data.payrollMonth }}/{{ data.payrollYear }}
+    </strong>?
+  </p>
+
+  <p>
+    This will process all eligible donation requests
+    for the selected payroll period.
+  </p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()">
+    Cancel
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    type="button"
+    (click)="confirm()">
+    Run Payroll
+  </button>
+
+</mat-dialog-actions>

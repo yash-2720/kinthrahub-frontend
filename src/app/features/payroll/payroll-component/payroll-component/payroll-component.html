@@ -74,6 +74,31 @@
     </button>
   </div>
 
+<div class="payroll-header">
+
+  <div>
+    <h1>Payroll</h1>
+    <p>Manage and execute payroll runs</p>
+  </div>
+
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="isPayrollProcessing"
+    (click)="openRunPayrollDialog()">
+    @if (isPayrollProcessing) {
+    <mat-spinner diameter="20"></mat-spinner>
+    Processing...
+  } @else {
+    <mat-icon>play_arrow</mat-icon>
+    Run New Payroll
+  }
+
+  </button>
+
+</div>
+
+
   <!-- Payroll Table -->
   @if (payrollRecords.length > 0) {
     <div class="payroll-table-card">

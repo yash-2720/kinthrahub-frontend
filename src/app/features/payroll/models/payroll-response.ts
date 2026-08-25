@@ -8,7 +8,8 @@ runStatus : PayrollRunStatus,
 processRequests : number,
 skippedRequests : number,
 processedOn : string,
-remarks : string
+remarks : string,
+totalDonationAmount : number
 
 }
 // 	private Integer skippedRequests;

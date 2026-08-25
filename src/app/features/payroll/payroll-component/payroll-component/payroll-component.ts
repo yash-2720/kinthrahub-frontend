@@ -11,6 +11,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { Subject } from 'rxjs/internal/Subject';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { RunPayrollDialog } from '../../payroll-dialog-box/run-payroll-dialog/run-payroll-dialog/run-payroll-dialog';
+import { RunPayrollConfirmationDialog } from '../../payroll-dialog-box/run-payroll-confirmation-dialog/run-payroll-confirmation-dialog/run-payroll-confirmation-dialog';
+import type { PayrollRequest } from '../../models/payroll-request';
+import { PayrollSuccessDialog } from '../../payroll-dialog-box/payroll-success-dialog/payroll-success-dialog/payroll-success-dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-payroll-component',
@@ -26,6 +32,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './payroll-component.html',
   styleUrl: './payroll-component.css',
@@ -34,6 +41,7 @@ export class PayrollComponent implements OnInit {
   constructor(
     private payrollService: PayrollService,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
 
   payrollRecords: PayrollResponse[] = [];
@@ -42,6 +50,7 @@ export class PayrollComponent implements OnInit {
   page = 0;
   size = 5;
   totalElements = 0;
+  isPayrollProcessing = false;
 
   displayedColumns = ['payrollRunId', 'payrollPeriod', 'processed', 'status', 'processedOn'];
 
@@ -83,5 +92,53 @@ export class PayrollComponent implements OnInit {
     this.size = event.pageSize;
     this.loadPayroll();
     this.cdr.detectChanges();
+  }
+
+  openRunPayrollDialog(): void {
+    const dialogRef = this.dialog.open(RunPayrollDialog, {
+      width: '450px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+
+      const confirmationDialog = this.dialog.open(RunPayrollConfirmationDialog, {
+        width: '450px',
+        data: {
+          payrollMonth: Number(result.payrollMonth),
+          payrollYear: Number(result.payrollYear),
+        },
+      });
+
+      confirmationDialog.afterClosed().subscribe((confirmed) => {
+        if (confirmed) {
+          this.executePayroll(result);
+        }
+      });
+    });
+  }
+  executePayroll(result: PayrollRequest): void {
+    this.isPayrollProcessing = true;
+    this.payrollService.executePayroll(result).subscribe({
+      next: (response) => {
+        this.isPayrollProcessing = false;
+        console.log('Payroll executed successfully:', response);
+        const dialogRef = this.dialog.open(PayrollSuccessDialog, {
+          width: '500px',
+          data: response,
+        });
+
+        dialogRef.afterClosed().subscribe(() => {
+          this.loadPayroll();
+        });
+      },
+
+      error: (error) => {
+        this.isPayrollProcessing = false;
+        console.error('Payroll execution failed:', error);
+      },
+    });
   }
 }
