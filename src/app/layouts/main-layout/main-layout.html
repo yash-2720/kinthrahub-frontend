@@ -20,7 +20,7 @@
     [class.collapsed]="!isExpanded"> -->
 
   <mat-sidenav mode="side" opened [style.width.px]="isExpanded ? 240 : 80">
-    <mat-nav-list>
+    <!-- <mat-nav-list>
       <a mat-list-item routerLink="/dashboard">
         <mat-icon matListItemIcon> dashboard </mat-icon>
 
@@ -68,6 +68,71 @@
           <span>Payroll</span>
         }
       </a>
+    </mat-nav-list> -->
+    <mat-nav-list>
+      <!-- Dashboard -->
+      <a mat-list-item routerLink="/dashboard">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+
+        @if (isExpanded) {
+          <span>Dashboard</span>
+        }
+      </a>
+
+      <!-- Employees - ADMIN -->
+      @if (isAdmin) {
+        <a mat-list-item routerLink="/employee-list">
+          <mat-icon matListItemIcon>groups</mat-icon>
+
+          @if (isExpanded) {
+            <span>Employees</span>
+          }
+        </a>
+      }
+
+      <!-- Application Users - ADMIN -->
+      @if (isAdmin) {
+        <a mat-list-item routerLink="/app-user-list">
+          <mat-icon matListItemIcon>manage_accounts</mat-icon>
+
+          @if (isExpanded) {
+            <span>Application Users</span>
+          }
+        </a>
+      }
+
+      <!-- Donate - ADMIN + EMPLOYEE -->
+      @if (isAdmin || isEmployee || isPayrollAdmin) {
+        <a mat-list-item routerLink="/app-donation-request">
+          <mat-icon matListItemIcon>volunteer_activism</mat-icon>
+
+          @if (isExpanded) {
+            <span>Donate</span>
+          }
+        </a>
+      }
+
+      <!-- My Donations - ADMIN + EMPLOYEE -->
+      @if (isAdmin || isEmployee || isPayrollAdmin) {
+        <a mat-list-item routerLink="/view-donations">
+          <mat-icon matListItemIcon>receipt_long</mat-icon>
+
+          @if (isExpanded) {
+            <span>My Donations</span>
+          }
+        </a>
+      }
+
+      <!-- Payroll - ADMIN + PAYROLL_ADMIN -->
+      @if (isAdmin || isPayrollAdmin) {
+        <a mat-list-item routerLink="/payrollrun">
+          <mat-icon matListItemIcon>payments</mat-icon>
+
+          @if (isExpanded) {
+            <span>Payroll</span>
+          }
+        </a>
+      }
     </mat-nav-list>
   </mat-sidenav>
 

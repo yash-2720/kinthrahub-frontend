@@ -23,4 +23,28 @@ export class TokenService {
   isLoggedIn() : boolean{
     return this.getToken() !== null;
   }
+
+    getRole(): string | null {
+
+    const token = this.getToken();
+
+    if (!token) {
+      return null;
+    }
+
+    try {
+
+      const payload = token.split('.')[1];
+
+      const decodedPayload = JSON.parse(atob(payload));
+
+      return decodedPayload.role ?? null;
+
+    } catch (error) {
+
+      console.error('Unable to decode JWT:', error);
+
+      return null;
+    }
+  }
 }
