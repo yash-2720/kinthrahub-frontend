@@ -1,74 +1,3 @@
-// import { Routes } from '@angular/router';
-// import { Login } from './features/authentication/login/login';
-// import { ProtectedPage } from './features/test/protected-page/protected-page';
-// import { authGuard } from './core/guards/auth-guard';
-// import { Dashboard } from './features/dashboard/dashboard/dashboard';
-// import { EmployeeList } from './features/employee/employee-list/employee-list/employee-list';
-// import { TestComponent } from './features/test/test';
-// import { MainLayout } from './layouts/main-layout/main-layout';
-// import { ApplicationUserList } from './features/application-user/application-user-list/application-user-list/application-user-list';
-
-// export const routes: Routes = [
-
-//   {
-//     path: '',
-//     redirectTo: 'login',
-//     pathMatch: 'full'
-//   },
-//   {
-//     path:'login',
-//     component: Login
-//   },{
-//   path: '',
-//   component: MainLayout,
-//   canActivate: [authGuard],
-//   children: [
-
-//     {
-//       path: 'dashboard',
-//       component: Dashboard
-//     },
-
-//     {
-//       path: 'employee-list',
-//       component: EmployeeList
-//     },
-
-//     {
-//       path: 'app-user-list',
-//       component: ApplicationUserList
-//     }
-
-//   ]
-// },
-//   // {
-//   //   path:'dashboard',
-//   //   component: Dashboard,
-//   //   canActivate: [authGuard]
-//   // },
-//   // {
-//   //   path:'protected-page',
-//   //   component: ProtectedPage,
-//   //   canActivate: [authGuard]
-//   // },{
-//   //   path:'employee-list',
-//   //   component: EmployeeList,
-//   //   canActivate: [authGuard]
-//   // },{
-//   //   path : 'app-user-list',
-//   //   component : ApplicationUserList,
-//   //   canActivate: [authGuard]
-//   // },
-//   // {
-//   //   path: 'test',
-//   //   component: TestComponent
-//   // },
-//   //
-//    {
-//     path: '**',
-//     redirectTo: 'login'
-//   }
-// ];
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth-guard';
@@ -86,20 +15,20 @@ import { SelectDonationPlans } from './features/donation-request/select-donation
 import { DonationRequestComponent } from './features/donation-request/donation-request-component/donation-request/donation-request';
 import { ViewMyDonations } from './features/view-donations/view-donations/view-my-donations/view-my-donations';
 import { PayrollComponent } from './features/payroll/payroll-component/payroll-component/payroll-component';
+import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
-
   // Default Route
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
 
   // Login
   {
     path: 'login',
-    component: Login
+    component: Login,
   },
 
   // Protected Application Layout
@@ -108,43 +37,63 @@ export const routes: Routes = [
     component: MainLayout,
     canActivate: [authGuard],
     children: [
-
       {
         path: 'dashboard',
-        component: Dashboard
+        component: Dashboard,
       },
 
       {
         path: 'employee-list',
-        component: EmployeeList
+        component: EmployeeList,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ROLE_ADMIN'],
+        },
       },
 
       {
         path: 'app-user-list',
-        component: ApplicationUserList
-      },{
-        path:'app-donation-request',
-        component : DonationRequestComponent
+        component: ApplicationUserList,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ROLE_ADMIN'],
+        },
       },
       {
-        path :'view-donations',
-        component : ViewMyDonations
+        path: 'app-donation-request',
+        component: DonationRequestComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_PAYROLL_ADMIN'],
+        },
       },
       {
-        path:'payrollrun',
-        component: PayrollComponent
+        path: 'view-donations',
+        component: ViewMyDonations,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_PAYROLL_ADMIN'],
+        },
+      },
+      {
+        path: 'payrollrun',
+        component: PayrollComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ROLE_ADMIN', 'ROLE_PAYROLL_ADMIN'],
+        },
       },
 
       // Temporary pages
       {
         path: 'protected-page',
-        component: ProtectedPage
+        component: ProtectedPage,
       },
 
       {
         path: 'test',
-        component: TestComponent
-      }
+        component: TestComponent,
+      },
 
       // Future Routes
 
@@ -162,14 +111,12 @@ export const routes: Routes = [
       //   path: 'payroll',
       //   component: PayrollComponent
       // }
-
-    ]
+    ],
   },
 
   // Wildcard
   {
     path: '**',
-    redirectTo: 'login'
-  }
-
+    redirectTo: 'login',
+  },
 ];
