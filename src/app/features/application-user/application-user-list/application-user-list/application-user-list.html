@@ -1,3 +1,8 @@
+<div class="page-header">
+    <h1>Application Users</h1>
+    <p>View and manage your application users</p>
+</div>
+<div class="search-container">
 <mat-form-field appearance="outline">
   <mat-label>Search User</mat-label>
 
@@ -8,6 +13,7 @@
     (keyup)="onSearch()"
   />
 </mat-form-field>
+</div>
 <!-- Loading Spinner -->
 <div class="loading-container" *ngIf="isLoading">
   <mat-spinner diameter="50"></mat-spinner>

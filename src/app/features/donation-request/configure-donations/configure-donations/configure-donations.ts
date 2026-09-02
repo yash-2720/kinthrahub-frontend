@@ -32,6 +32,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DonationRequest } from '../../models/donation-request';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDividerModule } from '@angular/material/divider';
+import { SnackbarService } from '../../../../shared/services/snackbar.service';
 @Component({
   selector: 'app-configure-donations',
   imports: [
@@ -70,6 +71,7 @@ export class ConfigureDonations implements OnInit {
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef,
+    private snackbar : SnackbarService
   ) {}
 
   @Input()
@@ -119,46 +121,13 @@ export class ConfigureDonations implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
+        this.snackbar.error( error? error.message : 'Error fetching current employee.');
         console.error('Error fetching current employee:', error);
       },
     });
   }
 
-  // private initializeDonationForms(): void {
-  //   this.donationWorkflowItems.forEach((item) => {
-  //     const donationForm = this.fb.group({
-  //       hospitalId: [item.hospitalId],
-  //       hospitalName: [item.hospitalName],
-  //       donationPlanId: [item.donationPlanId],
-  //       donationName: [item.donationName],
-  //       donationAmount: [
-  //         '',
-  //         [Validators.required, Validators.min(500), Validators.pattern(/^[0-9]+$/)],
-  //       ],
-  //       donationType: [DonationType.ONE_TIME],
-  //       donationStartDate: [new Date().toISOString().substring(0, 10)],
-  //       donationEndDate: [''],
-  //       description: [''],
-  //     });
-  //     donationForm.get('donationType')?.valueChanges.subscribe((value) => {
-  //       if (value === DonationType.RECURRING) {
-  //         donationForm.get('donationStartDate')?.setValue('');
-  //         donationForm.get('donationStartDate')?.setValidators([Validators.required]);
-  //         donationForm.get('donationStartDate')?.updateValueAndValidity();
-  //         // donationForm.get('donationEndDate')?.setValidators([Validators.required]);
-  //       } else {
-  //         donationForm
-  //           .get('donationStartDate')
-  //           ?.setValue(new Date().toISOString().substring(0, 10));
-  //         donationForm.get('donationStartDate')?.clearValidators();
-  //         donationForm.get('donationEndDate')?.setValue(null);
-  //         donationForm.get('donationStartDate')?.updateValueAndValidity();
-  //       }
-  //     });
 
-  //     this.donations.push(donationForm);
-  //   });
-  // }
 
 private initializeDonationForms(): void {
 

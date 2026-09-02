@@ -11,7 +11,7 @@ import { SnackbarService } from '../../../../shared/services/snackbar.service';
 import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DonationSubmitSuccess } from '../../donation-request-success-modal/donation-submit-success/donation-submit-success';
-import  { Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 // import { DonationWorkFlowItem};
 
@@ -28,7 +28,7 @@ export class DonationRequestComponent {
     private donationRequestService: DonationRequestService,
     private snackbar: SnackbarService,
     private dialog: MatDialog,
-      private router: Router,
+    private router: Router,
   ) {}
 
   currentSteps = 0;
@@ -74,23 +74,15 @@ export class DonationRequestComponent {
   }
 
   submitDonations(): void {
+    if (this.donationWorkflowItems.length === 0 || this.isSubmitting) {
+      return;
+    }
 
-  if (
-    this.donationWorkflowItems.length === 0 ||
-    this.isSubmitting
-  ) {
-    return;
-  }
+    this.isSubmitting = true;
 
-  this.isSubmitting = true;
-
-  this.employeeService.getCurrentEmployee().subscribe({
-
-    next: (employee) => {
-
-      const donationRequests: DonationRequest[] =
-        this.donationWorkflowItems.map((item) => {
-
+    this.employeeService.getCurrentEmployee().subscribe({
+      next: (employee) => {
+        const donationRequests: DonationRequest[] = this.donationWorkflowItems.map((item) => {
           return {
             employeeId: employee.employeeId,
             donationPlanId: item.donationPlanId,
@@ -99,71 +91,47 @@ export class DonationRequestComponent {
             donationStartDate: item.donationStartDate!,
             donationEndDate: item.donationEndDate ?? null,
           };
-
         });
 
-      const requests = donationRequests.map((request) =>
-        this.donationRequestService.createDonationRequest(request)
-      );
+        const requests = donationRequests.map((request) =>
+          this.donationRequestService.createDonationRequest(request),
+        );
 
-      forkJoin(requests).subscribe({
+        forkJoin(requests).subscribe({
+          next: (responses) => {
+            console.log('All donation requests submitted:', responses);
 
-        next: (responses) => {
+            this.isSubmitting = false;
 
-          console.log('All donation requests submitted:', responses);
+            this.openSuccessDialog();
+          },
 
-          this.isSubmitting = false;
+          error: (error) => {
+            console.error('Error submitting donation requests:', error);
 
-          this.openSuccessDialog();
+            this.isSubmitting = false;
 
-        },
+            this.snackbar.error(error?.error?.message || 'Failed to submit donation request.');
+          },
+        });
+      },
 
-        error: (error) => {
+      error: (error) => {
+        console.error('Error fetching current employee:', error);
 
-          console.error(
-            'Error submitting donation requests:',
-            error
-          );
+        this.isSubmitting = false;
 
-          this.isSubmitting = false;
-
-          this.snackbar.error(
-            error?.error?.message ||
-            'Failed to submit donation request.'
-          );
-
-        },
-
-      });
-
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Error fetching current employee:',
-        error
-      );
-
-      this.isSubmitting = false;
-
-      this.snackbar.error(
-        error?.error?.message ||
-        'Unable to retrieve employee information.'
-      );
-
-    },
-
-  });
-}
-openSuccessDialog(): void {
-
- const dialogRef = this.dialog.open(DonationSubmitSuccess, {
-    width: '420px',
-    disableClose: true,
-  });
-  dialogRef.afterClosed().subscribe(() => {
-    this.router.navigate(['/dashboard']);
-  });
-}
+        this.snackbar.error(error?.error?.message || 'Unable to retrieve employee information.');
+      },
+    });
+  }
+  openSuccessDialog(): void {
+    const dialogRef = this.dialog.open(DonationSubmitSuccess, {
+      width: '420px',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.router.navigate(['/dashboard']);
+    });
+  }
 }

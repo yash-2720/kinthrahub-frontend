@@ -1,3 +1,8 @@
+<div class="page-header">
+    <h1>Employee</h1>
+    <p>View and manage your employee records</p>
+</div>
+<div class="search-container">
 <mat-form-field appearance="outline">
   <mat-label>Search Employee</mat-label>
 
@@ -8,11 +13,13 @@
     (keyup)="onSearch()"
   />
 </mat-form-field>
+&nbsp;
 <button mat-raised-button color="primary" (click)="openAddEmployee()">
   <mat-icon>person_add</mat-icon>
-
   Add Employee
 </button>
+</div>
+
 @if(isLoading){
 <div class="loading-container" >
   <mat-spinner diameter="50"></mat-spinner>
@@ -20,7 +27,7 @@
 }
 
 @else if (employees && employees.length > 0) {
-  <h1>{{ employees.length }} Employees Found</h1>
+  <!-- <h1>{{ employees.length }} Employees Found</h1> -->
   
 
   <table mat-table [dataSource]="employees" class="mat-elevation-z8">

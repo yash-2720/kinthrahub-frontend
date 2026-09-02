@@ -17,6 +17,7 @@ import { SnackbarService } from '../../../../shared/services/snackbar.service';
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-employee-form',
@@ -29,6 +30,7 @@ import { finalize } from 'rxjs';
     MatDialogContent,
     MatInputModule,
     CommonModule,
+    MatButtonModule,
   ],
   templateUrl: './employee-form.html',
   styleUrl: './employee-form.css',

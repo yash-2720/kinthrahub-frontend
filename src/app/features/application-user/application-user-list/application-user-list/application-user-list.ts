@@ -19,6 +19,7 @@ import { ApplicationUserViewDialog } from '../../components/application-user-vie
 // import { UpdateApplicationUser } from '../../update-application-user-list/update-application-user/update-application-user';
 import { UpdateApplicationUserDialog } from '../../update-application-user-list/update-application-user/update-application-user-dialog';
 import { ApplicationUserDeleteDialog } from '../../components/application-user-delete-dialog/application-user-delete-dialog/application-user-delete-dialog';
+import  { SnackbarService } from '../../../../shared/services/snackbar.service';
 @Component({
   selector: 'app-application-user-list',
   imports: [
@@ -45,6 +46,7 @@ export class ApplicationUserList implements OnInit {
     private appUserService: ApplicationUserService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
+    private snackbar : SnackbarService
   ) {}
 
   appUsers: ApplicationUserResponse[] = [];
@@ -98,6 +100,7 @@ export class ApplicationUserList implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
+        this.snackbar.error( error? error.message : 'Error loading application users.');
         console.error(error);
       },
     });

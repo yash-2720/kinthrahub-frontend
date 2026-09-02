@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { SnackbarService } from '../../../shared/services/snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -32,6 +33,7 @@ export class Login {
     private authenticationService: AuthenticationService,
     private tokenService: TokenService,
     private router: Router,
+    private snackbar: SnackbarService,
   ) {
     this.loginForm = this.fb.group({
       username: [''],
@@ -53,7 +55,8 @@ export class Login {
         this.redirectToDashboard();
       },
       error: (error) => {
-        console.error('Login faileddd:', error);
+        this.snackbar.error( error? error.message : 'Login failed. Please check your credentials and try again.');
+        console.error('Login failedd:', error);
       },
     });
   }

@@ -2,7 +2,8 @@ import { Component, ChangeDetectorRef, Inject,  OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { EmployeeService } from '../../employee.service';
-import type { EmployeeResponse } from '../../employee-response.model';
+import  { EmployeeResponse } from '../../employee-response.model';
+import  { SnackbarService } from '../../../../shared/services/snackbar.service';
 
 @Component({
   selector: 'app-employee-view-dialog',
@@ -16,7 +17,7 @@ export class EmployeeViewDialog implements OnInit {
   // employeeData: any;
   employeeData: EmployeeResponse | null = null;
 
-  constructor(private employeeService: EmployeeService, 
+  constructor(private employeeService: EmployeeService, private snackbar: SnackbarService,
     private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: { employeeId: string }){}
 
@@ -38,6 +39,7 @@ export class EmployeeViewDialog implements OnInit {
         this.cdr.detectChanges(); // Trigger change detection to update the view
       },
       error: (error) => {
+        this.snackbar.error( error? error.message : 'Error fetching employee details.');
         console.error('Error fetching employee details:', error);
       }
     })

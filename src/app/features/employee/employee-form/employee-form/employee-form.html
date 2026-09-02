@@ -121,7 +121,7 @@
 
   <mat-dialog-actions align="end">
     <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
-    <button type="submit" [disabled]="employeeForm.invalid || isSubmitting">
+    <button  mat-stroked-button type="submit" [disabled]="employeeForm.invalid || isSubmitting">
       {{ mode === 'add' ? 'Save Employee' : 'Update Employee' }}
     </button>
   </mat-dialog-actions>

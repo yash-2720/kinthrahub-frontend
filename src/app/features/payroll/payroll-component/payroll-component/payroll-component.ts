@@ -17,6 +17,7 @@ import { RunPayrollConfirmationDialog } from '../../payroll-dialog-box/run-payro
 import type { PayrollRequest } from '../../models/payroll-request';
 import { PayrollSuccessDialog } from '../../payroll-dialog-box/payroll-success-dialog/payroll-success-dialog/payroll-success-dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import  { SnackbarService } from '../../../../shared/services/snackbar.service';
 
 @Component({
   selector: 'app-payroll-component',
@@ -42,6 +43,7 @@ export class PayrollComponent implements OnInit {
     private payrollService: PayrollService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
+    private snackbar : SnackbarService
   ) {}
 
   payrollRecords: PayrollResponse[] = [];
@@ -78,7 +80,8 @@ export class PayrollComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.log('Error retriving payroll');
+        this.snackbar.error('Error retrieving payroll records.');
+        console.error('Error retrieving payroll records:', error);
       },
     });
   }
@@ -137,7 +140,9 @@ export class PayrollComponent implements OnInit {
 
       error: (error) => {
         this.isPayrollProcessing = false;
+        this.snackbar.error('Payroll execution failed. Please try again.');
         console.error('Payroll execution failed:', error);
+
       },
     });
   }
