@@ -42,7 +42,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink,  Router } from '@angular/router';
 import { TokenService } from '../../core/services/token.service';
 
 @Component({
@@ -60,7 +60,7 @@ import { TokenService } from '../../core/services/token.service';
   styleUrl: './main-layout.css',
 })
 export class MainLayout implements OnInit {
-  constructor(private tokenService: TokenService) {}
+  constructor(private tokenService: TokenService, private router : Router) {}
   isExpanded = true;
 
   role: string | null = null;
@@ -89,5 +89,10 @@ export class MainLayout implements OnInit {
 
   get isPayrollAdmin(): boolean {
     return this.role === 'ROLE_PAYROLL_ADMIN';
+  }
+
+  logout():void{
+    this.tokenService.removeToken();
+    this.router.navigate(['/login']);
   }
 }

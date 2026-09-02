@@ -49,4 +49,8 @@ export class PayrollService {
   getPayrollById(payrollRunId : string): Observable<PayrollResponse>{
     return this.http.get<PayrollResponse>(`${this.PAYROLL_API}/getPayrollById/${payrollRunId}`);
   }
+
+  getLatestPayroll():Observable<PayrollResponse>{
+    return this.http.get<PayrollResponse>(`${this.PAYROLL_API}/getLatestPayroll`);
+  }
 }

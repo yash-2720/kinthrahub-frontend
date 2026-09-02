@@ -12,7 +12,8 @@ import { EmployeeService } from '../../employee/employee.service';
 import { DashboardService } from '../dashboard.service';
 import { TokenService } from '../../../core/services/token.service';
 import { CommonModule } from '@angular/common';
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PayrollService } from '../../payroll/payroll.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,8 +26,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatIconModule,
     MatCardModule,
     CommonModule,
-    MatProgressSpinnerModule
-],
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -36,7 +37,8 @@ export class Dashboard {
     private employeeService: EmployeeService,
     private donationRequestService: DonationRequestService,
     private dashboardService: DashboardService,
-    private tokenService : TokenService
+    private tokenService: TokenService,
+    private payrollService: PayrollService,
   ) {}
 
   myActiveDonations = 0;
@@ -49,17 +51,32 @@ export class Dashboard {
   isMyDataLoading = true;
   isAllDataLoading = true;
 
-  role : string | null = null;
+  isPayrollDataLoading = true;
+
+  role: string | null = null;
+
+  payrollData: any = null;
 
   ngOnInit(): void {
-    
     this.role = this.tokenService.getRole();
     this.loadMyData();
-    if(this.role === 'ROLE_ADMIN'){
+    if (this.role === 'ROLE_ADMIN') {
       this.loadAllData();
     }
-    
-    
+    if(this.role== 'ROLE_PAYROLL_ADMIN' || this.role === 'ROLE_ADMIN'){
+      this.loadPayrollData();
+    }
+  }
+
+  loadPayrollData(): void {
+    this.payrollService.getLatestPayroll().subscribe({
+      next : (response)=>{
+        this.payrollData = response;
+        console.log('Payroll Data:', this.payrollData);
+        this.isPayrollDataLoading = false;
+        this.cdr.detectChanges(); 
+      }
+    })
   }
 
   loadMyData(): void {
@@ -90,6 +107,4 @@ export class Dashboard {
       },
     });
   }
-
-
 }
