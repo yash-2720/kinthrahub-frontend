@@ -7,6 +7,7 @@ import type { PageResponse } from '../../core/models/page-response.model';
 import type { DonationRequestResponse } from './models/donation-request-response';
 import type { Observable } from 'rxjs';
 import type { DonationRequest } from './models/donation-request';
+import type { DonationSummaryResponse } from '../dashboard/model/donation-summary-response';
 
 @Injectable({
   providedIn: 'root',
@@ -63,6 +64,12 @@ export class DonationRequestService {
     return this.http.post<DonationRequestResponse>(
       `${this.DONATION_REQUEST_API}/createDonationRequest`,
       request,
+    );
+  }
+
+  getDonationSummary(): Observable<DonationSummaryResponse> {
+    return this.http.get<DonationSummaryResponse>(
+      `${this.DONATION_REQUEST_API}/getDonationSummary`,
     );
   }
 }

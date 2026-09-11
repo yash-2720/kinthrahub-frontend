@@ -30,10 +30,17 @@
   border-radius: 16px;
 }
 
+/* .employee-info {
+  display: flex;
+  gap: 60px;
+  padding-top: 12px;
+} */
+
 .employee-info {
   display: flex;
   gap: 60px;
   padding-top: 12px;
+  flex-wrap: wrap;
 }
 
 .info-item {

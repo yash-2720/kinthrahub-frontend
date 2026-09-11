@@ -33,6 +33,7 @@ import { DonationRequest } from '../../models/donation-request';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDividerModule } from '@angular/material/divider';
 import { SnackbarService } from '../../../../shared/services/snackbar.service';
+import { DonationRequestService } from '../../donation-request.service';
 @Component({
   selector: 'app-configure-donations',
   imports: [
@@ -57,7 +58,7 @@ import { SnackbarService } from '../../../../shared/services/snackbar.service';
     MatCardModule,
     MatCheckboxModule,
     MatButtonToggleModule,
-    MatDividerModule
+    MatDividerModule,
   ],
   templateUrl: './configure-donations.html',
   styleUrl: './configure-donations.css',
@@ -67,11 +68,15 @@ export class ConfigureDonations implements OnInit {
   basicSalary: number = 0;
   employeeId: string = '';
 
+  currentDonationAmount: number = 0;
+  eligibleDonationAmount: number = 0;
+
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef,
-    private snackbar : SnackbarService
+    private snackbar: SnackbarService,
+    private donationRequestService: DonationRequestService,
   ) {}
 
   @Input()
@@ -103,6 +108,7 @@ export class ConfigureDonations implements OnInit {
     this.initializeDonationForms();
     this.getCurrentEmployee();
     this.cdr.detectChanges();
+    this.getDonationSummary();
     // console.log('Donations Length : ', this.donations.length);
     // console.log('Donations :', this.donations);
   }
@@ -121,159 +127,102 @@ export class ConfigureDonations implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        this.snackbar.error( error? error.message : 'Error fetching current employee.');
+        this.snackbar.error(error ? error.message : 'Error fetching current employee.');
         console.error('Error fetching current employee:', error);
       },
     });
   }
 
+  private initializeDonationForms(): void {
+    this.donationWorkflowItems.forEach((item) => {
+      const donationType = item.donationType ?? DonationType.ONE_TIME;
 
+      const donationForm = this.fb.group({
+        hospitalId: [item.hospitalId],
 
-private initializeDonationForms(): void {
+        hospitalName: [item.hospitalName],
 
-  this.donationWorkflowItems.forEach((item) => {
+        donationPlanId: [item.donationPlanId],
 
-    const donationType =
-      item.donationType ?? DonationType.ONE_TIME;
+        donationName: [item.donationName],
 
-    const donationForm = this.fb.group({
+        amountOption: [this.getAmountOption(item.donationAmount)],
 
-      hospitalId: [item.hospitalId],
+        donationAmount: [
+          item.donationAmount ?? '',
+          [Validators.required, Validators.min(500), Validators.pattern(/^[0-9]+$/)],
+        ],
 
-      hospitalName: [item.hospitalName],
+        donationType: [donationType],
 
-      donationPlanId: [item.donationPlanId],
+        donationStartDate: [item.donationStartDate ?? new Date().toISOString().substring(0, 10)],
 
-      donationName: [item.donationName],
+        donationEndDate: [item.donationEndDate ?? null],
 
-       amountOption: [
-    this.getAmountOption(item.donationAmount)
-  ],
-
-      donationAmount: [
-        item.donationAmount ?? '',
-        [
-          Validators.required,
-          Validators.min(500),
-          Validators.pattern(/^[0-9]+$/)
-        ]
-      ],
-
-      donationType: [donationType],
-
-      donationStartDate: [
-        item.donationStartDate ??
-        new Date().toISOString().substring(0, 10)
-      ],
-
-      donationEndDate: [
-        item.donationEndDate ?? null
-      ],
-
-      description: [''],
-
-    });
-
-    // Configure initial validation state
-    if (donationType === DonationType.RECURRING) {
-
-      donationForm
-        .get('donationStartDate')
-        ?.setValidators([Validators.required]);
-
-    } else {
-
-      donationForm
-        .get('donationStartDate')
-        ?.clearValidators();
-
-    }
-
-    donationForm
-      .get('donationStartDate')
-      ?.updateValueAndValidity();
-
-    // Listen for future user changes
-    donationForm
-      .get('donationType')
-      ?.valueChanges
-      .subscribe((value) => {
-
-        if (value === DonationType.RECURRING) {
-
-          donationForm
-            .get('donationStartDate')
-            ?.setValue('');
-
-          donationForm
-            .get('donationStartDate')
-            ?.setValidators([Validators.required]);
-
-        } else {
-
-          donationForm
-            .get('donationStartDate')
-            ?.setValue(
-              new Date().toISOString().substring(0, 10)
-            );
-
-          donationForm
-            .get('donationStartDate')
-            ?.clearValidators();
-
-          donationForm
-            .get('donationEndDate')
-            ?.setValue(null);
-        }
-
-        donationForm
-          .get('donationStartDate')
-          ?.updateValueAndValidity();
-
+        description: [''],
       });
 
-    this.donations.push(donationForm);
+      // Configure initial validation state
+      if (donationType === DonationType.RECURRING) {
+        donationForm.get('donationStartDate')?.setValidators([Validators.required]);
+      } else {
+        donationForm.get('donationStartDate')?.clearValidators();
+      }
 
-  });
-}
-private getAmountOption(amount?: number): string {
+      donationForm.get('donationStartDate')?.updateValueAndValidity();
 
-  if (amount === 500) {
-    return '500';
+      // Listen for future user changes
+      donationForm.get('donationType')?.valueChanges.subscribe((value) => {
+        if (value === DonationType.RECURRING) {
+          donationForm.get('donationStartDate')?.setValue('');
+
+          donationForm.get('donationStartDate')?.setValidators([Validators.required]);
+        } else {
+          donationForm
+            .get('donationStartDate')
+            ?.setValue(new Date().toISOString().substring(0, 10));
+
+          donationForm.get('donationStartDate')?.clearValidators();
+
+          donationForm.get('donationEndDate')?.setValue(null);
+        }
+
+        donationForm.get('donationStartDate')?.updateValueAndValidity();
+      });
+
+      this.donations.push(donationForm);
+    });
+  }
+  private getAmountOption(amount?: number): string {
+    if (amount === 500) {
+      return '500';
+    }
+
+    if (amount === 1000) {
+      return '1000';
+    }
+
+    if (amount === 5000) {
+      return '5000';
+    }
+
+    return 'custom';
   }
 
-  if (amount === 1000) {
-    return '1000';
+  onAmountOptionChange(index: number, option: string): void {
+    const donation = this.donations.at(index) as FormGroup;
+
+    if (option === '500') {
+      donation.get('donationAmount')?.setValue(500);
+    } else if (option === '1000') {
+      donation.get('donationAmount')?.setValue(1000);
+    } else if (option === '5000') {
+      donation.get('donationAmount')?.setValue(5000);
+    }
+
+    donation.get('donationAmount')?.markAsTouched();
+    donation.get('donationAmount')?.updateValueAndValidity();
   }
-
-  if (amount === 5000) {
-    return '5000';
-  }
-
-  return 'custom';
-}
-
-onAmountOptionChange(index: number, option: string): void {
-
-  const donation = this.donations.at(index) as FormGroup;
-
-  if (option === '500') {
-
-    donation.get('donationAmount')?.setValue(500);
-
-  } else if (option === '1000') {
-
-    donation.get('donationAmount')?.setValue(1000);
-
-  } else if (option === '5000') {
-
-    donation.get('donationAmount')?.setValue(5000);
-
-  }
-
-  donation.get('donationAmount')?.markAsTouched();
-  donation.get('donationAmount')?.updateValueAndValidity();
-}
   isDonationTypeRecurring(index: number): boolean {
     const donationForm = this.donations.at(index);
     if (donationForm.get('donationType')?.value === DonationType.RECURRING) {
@@ -327,6 +276,26 @@ onAmountOptionChange(index: number, option: string): void {
 
   //   this.cdr.detectChanges();
   // }
+
+  getDonationSummary(): void {
+    this.donationRequestService.getDonationSummary().subscribe({
+      next: (response) => {
+        this.basicSalary = response.basicSalary;
+        this.currentDonationAmount = response.currentDonationAmount;
+        this.eligibleDonationAmount = response.eligibleDonationAmount;
+
+        console.log('Donation Summary:', response);
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.snackbar.error(error ? error.message : 'Error fetching donation summary.');
+
+        console.error('Error fetching donation summary:', error);
+      },
+    });
+  }
+
   goToNextStep(): void {
     if (this.configureDonationForms.invalid) {
       return;

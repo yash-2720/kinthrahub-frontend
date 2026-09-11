@@ -1,5 +1,5 @@
 <div class="configure-page">
-    <!-- Section heading -->
+  <!-- Section heading -->
   <div class="section-heading">
     <div>
       <h2>Configure Your Donations</h2>
@@ -33,6 +33,15 @@
           <span class="info-label">Basic Salary</span>
           <span class="info-value"> ₹{{ basicSalary | number: '1.0-0' }} </span>
         </div>
+        <div class="info-item">
+          <span class="info-label">Current Month Donation</span>
+          <span class="info-value"> ₹{{ currentDonationAmount | number: '1.0-0' }} </span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Eligible Donation Amount</span>
+          <span class="info-value"> ₹{{ eligibleDonationAmount | number: '1.0-0' }} </span>
+        </div>
       </div>
     </mat-card-content>
   </mat-card>
@@ -47,8 +56,6 @@
       </span>
     </div>
   }
-
-
 
   <form [formGroup]="configureDonationForms">
     <div formArrayName="donations">
