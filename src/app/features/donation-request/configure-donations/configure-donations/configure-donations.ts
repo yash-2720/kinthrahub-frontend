@@ -246,7 +246,11 @@ export class ConfigureDonations implements OnInit {
     for (let i = 0; i < donations.length; i++) {
       donationAmount += Number(donations.at(i).get('donationAmount')?.value);
     }
-    if (donationAmount + 5000 >= basicSalary) {
+    // if (donationAmount + 5000 >= basicSalary) {
+    //   console.log('Error', this.configureDonationForms.errors, ' ', donationAmount);
+    //   return { insufficientRemainingSalary: true };
+    // }
+    if (donationAmount > this.eligibleDonationAmount) {
       console.log('Error', this.configureDonationForms.errors, ' ', donationAmount);
       return { insufficientRemainingSalary: true };
     }
@@ -283,6 +287,8 @@ export class ConfigureDonations implements OnInit {
         this.basicSalary = response.basicSalary;
         this.currentDonationAmount = response.currentDonationAmount;
         this.eligibleDonationAmount = response.eligibleDonationAmount;
+
+        this.configureDonationForms.updateValueAndValidity();
 
         console.log('Donation Summary:', response);
 

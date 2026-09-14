@@ -14,6 +14,7 @@ import { MatDialogModule,  MatDialog } from '@angular/material/dialog';
 import { EmployeeViewDialog } from '../../../employee/components/employee-view-dialog/employee-view-dialog';
 import { ViewDetailsDialog } from '../../view-details-dialog/view-details-dialog/view-details-dialog';
 import { DeleteDonationDialog } from '../../view-details-dialog/delete-donation-dialog/delete-donation-dialog/delete-donation-dialog';
+import { DonationStatus } from '../../../donation-request/enums/donation-status.enum';
 
 @Component({
   selector: 'app-view-my-donations',
@@ -38,7 +39,8 @@ export class ViewMyDonations implements OnInit {
   search = '';
   searchSubject = new Subject<string>;
   donationRequests: DonationRequestResponse[] = [];
-
+  DonationStatus = DonationStatus; // Expose the enum to the template
+  
   constructor(
     private donationRequestService: DonationRequestService,
     private cdr: ChangeDetectorRef,

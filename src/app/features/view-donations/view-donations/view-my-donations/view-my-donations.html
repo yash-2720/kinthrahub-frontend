@@ -88,7 +88,8 @@
             >
               View Details
             </button>
-
+            
+            @if(donation.donationStatus == DonationStatus.INITIALIZED){
             <button
               mat-raised-button
               color="warn"
@@ -96,6 +97,7 @@
             >
               Cancel Donation
             </button>
+          }
           </mat-card-actions>
         </mat-card>
       }

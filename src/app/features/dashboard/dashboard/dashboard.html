@@ -1,27 +1,19 @@
 <div class="dashboard">
-
   <div class="dashboard-header">
     <h1>Dashboard</h1>
     <p>Welcome to KinthraHub</p>
   </div>
 
-
   <!-- Personal Donation Details -->
   <div class="dashboard-section personal-section">
-
     @if (isMyDataLoading) {
-
       <div class="card-spinner">
         <mat-spinner diameter="40"></mat-spinner>
       </div>
-
     } @else {
-
       <mat-card>
         <mat-card-header>
-          <mat-card-title>
-            Active Donations
-          </mat-card-title>
+          <mat-card-title> Active Donations </mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
@@ -31,44 +23,29 @@
         </mat-card-content>
       </mat-card>
 
-
       <mat-card>
         <mat-card-header>
-          <mat-card-title>
-            My Donations
-          </mat-card-title>
+          <mat-card-title> My Donations </mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
-          <div class="card-value">
-            ₹{{ myTotalDonationAmount }}
-          </div>
+          <div class="card-value">₹{{ myTotalDonationAmount }}</div>
         </mat-card-content>
       </mat-card>
-
     }
-
   </div>
-
 
   <!-- Admin Donation Details -->
   @if (role === 'ROLE_ADMIN') {
-
     <div class="dashboard-section admin-section">
-
       @if (isAllDataLoading) {
-
         <div class="card-spinner">
           <mat-spinner diameter="40"></mat-spinner>
         </div>
-
       } @else {
-
         <mat-card>
           <mat-card-header>
-            <mat-card-title>
-              All Active Donations
-            </mat-card-title>
+            <mat-card-title> All Active Donations </mat-card-title>
           </mat-card-header>
 
           <mat-card-content>
@@ -78,103 +55,68 @@
           </mat-card-content>
         </mat-card>
 
-
         <mat-card>
           <mat-card-header>
-            <mat-card-title>
-              All Donations
-            </mat-card-title>
+            <mat-card-title> All Donations </mat-card-title>
           </mat-card-header>
 
           <mat-card-content>
-            <div class="card-value">
-              ₹{{ totalDonation }}
-            </div>
+            <div class="card-value">₹{{ totalDonation }}</div>
           </mat-card-content>
         </mat-card>
-
       }
-
     </div>
-
   }
-
 
   <!-- Payroll Details -->
-  @if (role === 'ROLE_PAYROLL_ADMIN' || role === 'ROLE_ADMIN') {
+  @if (payrollData != null) {
+    @if (role === 'ROLE_PAYROLL_ADMIN' || role === 'ROLE_ADMIN') {
+      <div class="payroll-section">
+        @if (isPayrollDataLoading) {
+          <div class="payroll-spinner">
+            <mat-spinner diameter="45"></mat-spinner>
+          </div>
+        } @else {
+          <mat-card class="payroll-card">
+            <mat-card-header>
+              <mat-card-title> Latest Payroll Run </mat-card-title>
+            </mat-card-header>
 
-    <div class="payroll-section">
+            <mat-card-content>
+              <div class="payroll-details">
+                <div class="payroll-item">
+                  <span class="payroll-label"> Payroll Period </span>
 
-      @if (isPayrollDataLoading) {
+                  <span class="payroll-value">
+                    {{ payrollData?.payrollMonth }} /
+                    {{ payrollData?.payrollYear }}
+                  </span>
+                </div>
 
-        <div class="payroll-spinner">
-          <mat-spinner diameter="45"></mat-spinner>
-        </div>
+                <div class="payroll-item">
+                  <span class="payroll-label"> Status </span>
 
-      } @else {
+                  <span class="payroll-value">
+                    {{ payrollData?.runStatus }}
+                  </span>
+                </div>
 
-        <mat-card class="payroll-card">
+                <div class="payroll-item">
+                  <span class="payroll-label"> Processed On </span>
 
-          <mat-card-header>
-            <mat-card-title>
-              Latest Payroll Run
-            </mat-card-title>
-          </mat-card-header>
-
-
-          <mat-card-content>
-
-            <div class="payroll-details">
-
-              <div class="payroll-item">
-
-                <span class="payroll-label">
-                  Payroll Period
-                </span>
-
-                <span class="payroll-value">
-                  {{ payrollData?.payrollMonth }} /
-                  {{ payrollData?.payrollYear }}
-                </span>
-
+                  <span class="payroll-value">
+                    {{ payrollData?.processedOn | date: 'dd MMM yyyy, hh:mm a' }}
+                  </span>
+                </div>
               </div>
-
-
-              <div class="payroll-item">
-
-                <span class="payroll-label">
-                  Status
-                </span>
-
-                <span class="payroll-value">
-                  {{ payrollData?.runStatus }}
-                </span>
-
-              </div>
-
-
-              <div class="payroll-item">
-
-                <span class="payroll-label">
-                  Processed On
-                </span>
-
-                <span class="payroll-value">
-                  {{ payrollData?.processedOn | date:'dd MMM yyyy, hh:mm a' }}
-                </span>
-
-              </div>
-
-            </div>
-
-          </mat-card-content>
-
-        </mat-card>
-
-      }
-
-    </div>
-
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  } @else {
+    <mat-card-content>
+      <span>No payroll data available.</span>
+    </mat-card-content>
   }
-
 </div>
