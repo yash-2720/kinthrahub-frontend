@@ -70,6 +70,7 @@ export class ConfigureDonations implements OnInit {
 
   currentDonationAmount: number = 0;
   eligibleDonationAmount: number = 0;
+  today = new Date().toISOString().split('T')[0];
 
   constructor(
     private fb: FormBuilder,

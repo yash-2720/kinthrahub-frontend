@@ -169,7 +169,7 @@
                     <label> Start Date </label>
 
                     <div class="date-input-wrapper">
-                      <input type="date" formControlName="donationStartDate" />
+                      <input type="date" formControlName="donationStartDate" [min] = "today" />
                     </div>
 
                     @if (
@@ -185,7 +185,7 @@
                     <label> End Date </label>
 
                     <div class="date-input-wrapper">
-                      <input type="date" formControlName="donationEndDate" />
+                      <input type="date" formControlName="donationEndDate" [min] = "today" />
                     </div>
                   </div>
                 </div>
