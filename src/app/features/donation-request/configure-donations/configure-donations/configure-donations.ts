@@ -164,31 +164,64 @@ export class ConfigureDonations implements OnInit {
       });
 
       // Configure initial validation state
+      // if (donationType === DonationType.RECURRING) {
+      //   donationForm.get('donationStartDate')?.setValidators([Validators.required]);
+      // } else {
+      //   donationForm.get('donationStartDate')?.clearValidators();
+      // }
+
       if (donationType === DonationType.RECURRING) {
+        donationForm.get('donationStartDate')?.setValue(this.today);
         donationForm.get('donationStartDate')?.setValidators([Validators.required]);
+        donationForm.get('donationStartDate')?.disable();
       } else {
+        donationForm.get('donationStartDate')?.setValue(this.today);
         donationForm.get('donationStartDate')?.clearValidators();
+        donationForm.get('donationStartDate')?.enable();
       }
 
       donationForm.get('donationStartDate')?.updateValueAndValidity();
 
       // Listen for future user changes
       donationForm.get('donationType')?.valueChanges.subscribe((value) => {
-        if (value === DonationType.RECURRING) {
-          donationForm.get('donationStartDate')?.setValue('');
+        // if (value === DonationType.RECURRING) {
+        //   donationForm.get('donationStartDate')?.setValue('');
 
+        //   donationForm.get('donationStartDate')?.setValidators([Validators.required]);
+        // } else {
+        //   donationForm
+        //     .get('donationStartDate')
+        //     ?.setValue(new Date().toISOString().substring(0, 10));
+
+        //   donationForm.get('donationStartDate')?.clearValidators();
+
+        //   donationForm.get('donationEndDate')?.setValue(null);
+        // }
+        if (value === DonationType.RECURRING) {
+          // Recurring donation always starts today
+          donationForm.get('donationStartDate')?.setValue(this.today);
+
+          // Start date is required
           donationForm.get('donationStartDate')?.setValidators([Validators.required]);
+
+          // User cannot change the recurring start date
+          donationForm.get('donationStartDate')?.disable();
         } else {
-          donationForm
-            .get('donationStartDate')
-            ?.setValue(new Date().toISOString().substring(0, 10));
+          // One-time donation
+          donationForm.get('donationStartDate')?.setValue(this.today);
 
           donationForm.get('donationStartDate')?.clearValidators();
 
+          // Enable it again
+          donationForm.get('donationStartDate')?.enable();
+
+          // One-time donation doesn't use an end date
           donationForm.get('donationEndDate')?.setValue(null);
         }
 
         donationForm.get('donationStartDate')?.updateValueAndValidity();
+
+        // donationForm.get('donationStartDate')?.updateValueAndValidity();
       });
 
       this.donations.push(donationForm);
