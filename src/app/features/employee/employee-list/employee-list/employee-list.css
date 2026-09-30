@@ -1,4 +1,29 @@
-.search-container mat-form-field {
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
-  max-width: 500px;
+}
+
+.search-field {
+  width: 500px;
+  flex-shrink: 0;
+}
+
+.status-field {
+  width: 210px;
+  flex-shrink: 0;
+}
+
+.sort-button {
+  height: 48px;
+  min-width: 90px;
+  flex-shrink: 0;
+  margin-bottom: 15px;
+}
+
+.add-employee-button {
+  height: 48px;
+  flex-shrink: 0;
+  margin-bottom: 19px;
 }

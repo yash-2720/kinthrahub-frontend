@@ -21,12 +21,14 @@ export class EmployeeService {
     size: number,
     search: string,
     isActive: boolean,
+    sortOrder: string
   ): Observable<PageResponse<EmployeeResponse>> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)
       .set('search', search)
-      .set('isActive', isActive);
+      .set('isActive', isActive)
+      .set('sortOrder', sortOrder);
 
     return this.http.get<PageResponse<EmployeeResponse>>(`${this.EMPLOYEE_API}/getAllEmployees`, {
       params,

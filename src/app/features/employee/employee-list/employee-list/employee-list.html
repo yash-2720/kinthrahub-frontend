@@ -2,7 +2,7 @@
     <h1>Employee</h1>
     <p>View and manage your employee records</p>
 </div>
-<div class="search-container">
+<!-- <div class="search-container">
 <mat-form-field appearance="outline">
   <mat-label>Search Employee</mat-label>
 
@@ -13,12 +13,127 @@
     (keyup)="onSearch()"
   />
 </mat-form-field>
+<mat-form-field appearance="outline">
+  <mat-label>Status</mat-label>
+
+  <mat-select
+    [(ngModel)]="active"
+    (selectionChange)="onStatusChange()">
+
+    <mat-option [value]="true">
+      Active
+    </mat-option>
+
+    <mat-option [value]="false">
+      Inactive
+    </mat-option>
+
+  </mat-select>
+</mat-form-field>
+<mat-form-field appearance="outline">
+  <mat-label>Sort By</mat-label>
+
+  <mat-select
+    [(ngModel)]="sortOrder"
+    (selectionChange)="onStatusChange()">
+
+    <mat-option [value]="'asc'">
+      Ascending
+    </mat-option>
+
+    <mat-option [value]="'desc'">
+      Descending
+    </mat-option>
+
+  </mat-select>
+</mat-form-field>
 &nbsp;
 <button mat-raised-button color="primary" (click)="openAddEmployee()">
   <mat-icon>person_add</mat-icon>
   Add Employee
 </button>
+</div> -->
+
+<div class="search-container">
+
+  <!-- Search -->
+  <mat-form-field
+    appearance="outline"
+    floatLabel="always"
+    class="search-field">
+
+    <mat-label>Search Employee</mat-label>
+
+    <input
+      matInput
+      placeholder="Search by ID, Number, Name or Email"
+      [(ngModel)]="search"
+      (keyup)="onSearch()"
+    />
+
+  </mat-form-field>
+
+
+  <!-- Status -->
+  <mat-form-field
+    appearance="outline"
+    floatLabel="always"
+    class="status-field">
+
+    <mat-label>Status</mat-label>
+
+    <mat-select
+      [(ngModel)]="active"
+      (selectionChange)="onFilterChange()">
+
+      <mat-option [value]="true">
+        Active
+      </mat-option>
+
+      <mat-option [value]="false">
+        Inactive
+      </mat-option>
+
+    </mat-select>
+
+  </mat-form-field>
+
+
+  <!-- Sort -->
+  <button
+    mat-stroked-button
+    type="button"
+    class="sort-button"
+    (click)="toggleSortOrder()"
+    [matTooltip]="sortOrder === 'asc'
+      ? 'Change to descending order'
+      : 'Change to ascending order'">
+
+    @if (sortOrder === 'asc') {
+      Z → A
+    } @else {
+      A → Z
+    }
+
+  </button>
+
+
+  <!-- Add Employee -->
+  <button
+    mat-raised-button
+    color="primary"
+    class="add-employee-button"
+    (click)="openAddEmployee()">
+
+    <mat-icon>person_add</mat-icon>
+    Add Employee
+
+  </button>
+
 </div>
+
+
+
 
 @if(isLoading){
 <div class="loading-container" >

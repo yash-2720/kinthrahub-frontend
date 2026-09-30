@@ -24,6 +24,7 @@ import { EmployeeForm } from '../../employee-form/employee-form/employee-form';
 import { CreateApplicationUserDialog } from '../../../application-user/application-user-form/create-application-user-dialog/create-application-user-dialog';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import  { SnackbarService } from '../../../../shared/services/snackbar.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-employee-list',
@@ -41,8 +42,8 @@ import  { SnackbarService } from '../../../../shared/services/snackbar.service';
     MatInputModule,
     MatIconModule,
     MatTooltipModule,
-    FormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSelectModule
 ],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.css',
@@ -66,6 +67,9 @@ export class EmployeeList implements OnInit {
   search = '';
 
   active = true;
+
+  sortOrder = 'asc';
+
 isLoading = false;
   displayedColumns: string[] = [
     'employeeId',
@@ -88,7 +92,7 @@ isLoading = false;
     console.log('Loading page:', this.page);
     const request = this.search.trim()
       ? this.employeeService.searchEmployees(this.page, this.size, this.search, this.active)
-      : this.employeeService.getAllEmployees(this.page, this.size, this.search, this.active);
+      : this.employeeService.getAllEmployees(this.page, this.size, this.search, this.active, this.sortOrder);
 
     request.subscribe({
       next: (response) => {
@@ -118,6 +122,17 @@ isLoading = false;
     this.page = 0; // Reset to the first page when searching
     this.loadEmployees();
   }
+
+  onFilterChange(){
+    this.page = 0;
+    this.loadEmployees();
+  }
+
+  toggleSortOrder(): void {
+  this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+  this.page = 0;
+  this.loadEmployees();
+}
 
   openViewDialog(employeeId: String): void {
     this.dialog.open(EmployeeViewDialog, { data: { employeeId: employeeId } });
