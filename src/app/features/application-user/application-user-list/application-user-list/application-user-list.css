@@ -1,4 +1,23 @@
-.search-container mat-form-field {
+.search-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.search-container mat-form-field:first-child {
   width: 100%;
   max-width: 500px;
+}
+
+.status-container {
+  width: 210px;
+}
+
+.sort-button {
+  height: 48px;
+  min-width: 90px;
+  flex-shrink: 0;
+  margin-left: 16px;
+  margin-bottom: 25px;
 }

@@ -1,53 +1,41 @@
 <div class="page-header">
-    <h1>Application Users</h1>
-    <p>View and manage your application users</p>
+  <h1>Application Users</h1>
+  <p>View and manage your application users</p>
 </div>
 <div class="search-container">
-<mat-form-field appearance="outline">
-  <mat-label>Search User</mat-label>
+  <mat-form-field appearance="outline">
+    <mat-label>Search User</mat-label>
 
-  <input
-    matInput
-    placeholder="Search by ID, Number, Name or Email"
-    [(ngModel)]="search"
-    (keyup)="onSearch()"
-  />
-</mat-form-field>
-<mat-form-field appearance="outline">
-  <mat-label>Status</mat-label>
+    <input
+      matInput
+      placeholder="Search by ID, Number, Name or Email"
+      [(ngModel)]="search"
+      (keyup)="onSearch()"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="status-container">
+    <mat-label>Status</mat-label>
 
-  <mat-select
-    [(ngModel)]="active"
-    (selectionChange)="onStatusChange()">
+    <mat-select [(ngModel)]="active" (selectionChange)="onStatusChange()">
+      <mat-option [value]="true"> Active </mat-option>
 
-    <mat-option [value]="true">
-      Active
-    </mat-option>
+      <mat-option [value]="false"> Inactive </mat-option>
+    </mat-select>
+  </mat-form-field>
 
-    <mat-option [value]="false">
-      Inactive
-    </mat-option>
-
-  </mat-select>
-
-</mat-form-field>
-
-    <!-- Sort -->
+  <!-- Sort -->
   <button
     mat-stroked-button
     type="button"
     class="sort-button"
     (click)="toggleSortOrder()"
-    [matTooltip]="sortOrder === 'asc'
-      ? 'Change to descending order'
-      : 'Change to ascending order'">
-
+    [matTooltip]="sortOrder === 'asc' ? 'Change to descending order' : 'Change to ascending order'"
+  >
     @if (sortOrder === 'asc') {
       Z → A
     } @else {
       A → Z
     }
-
   </button>
 </div>
 <!-- Loading Spinner -->
@@ -101,8 +89,10 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let user">
-        <button mat-raised-button color="primary" (click) = openViewDialog(user.userId)>View</button>
-         
+        <button mat-raised-button color="primary" (click)="openViewDialog(user.userId)">
+          View
+        </button>
+
         <button mat-icon-button (click)="openEditAppUser(user.userId)">
           <mat-icon>edit</mat-icon>
         </button>
@@ -134,7 +124,8 @@
 <!-- No Results -->
 <div class="no-data" *ngIf="!isLoading && appUsers.length === 0">
   <h3>No application users found.</h3>
-   <p *ngIf="search.trim()">
-    No records match "<strong>{{ search }}</strong>".
+  <p *ngIf="search.trim()">
+    No records match "<strong>{{ search }}</strong
+    >".
   </p>
 </div>
