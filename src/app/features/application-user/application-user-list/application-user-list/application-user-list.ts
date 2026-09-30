@@ -20,6 +20,7 @@ import { ApplicationUserViewDialog } from '../../components/application-user-vie
 import { UpdateApplicationUserDialog } from '../../update-application-user-list/update-application-user/update-application-user-dialog';
 import { ApplicationUserDeleteDialog } from '../../components/application-user-delete-dialog/application-user-delete-dialog/application-user-delete-dialog';
 import  { SnackbarService } from '../../../../shared/services/snackbar.service';
+import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-application-user-list',
   imports: [
@@ -37,7 +38,8 @@ import  { SnackbarService } from '../../../../shared/services/snackbar.service';
     MatTooltipModule,
     FormsModule,
     MatProgressSpinnerModule,
-  ],
+    MatSelectModule
+],
   templateUrl: './application-user-list.html',
   styleUrl: './application-user-list.css',
 })
@@ -116,6 +118,18 @@ export class ApplicationUserList implements OnInit {
     this.size = event.pageSize;
     this.loadAppUsers();
   }
+
+  onStatusChange() {
+    this.page = 0;
+    this.loadAppUsers();
+  }
+
+  
+  toggleSortOrder(): void {
+  this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+  this.page = 0;
+  this.loadAppUsers();
+}
 
   openViewDialog(userId: string): void {
     const dialogRef = this.dialog.open(ApplicationUserViewDialog, {

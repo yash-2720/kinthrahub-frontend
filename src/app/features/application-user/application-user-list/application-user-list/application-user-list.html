@@ -13,6 +13,42 @@
     (keyup)="onSearch()"
   />
 </mat-form-field>
+<mat-form-field appearance="outline">
+  <mat-label>Status</mat-label>
+
+  <mat-select
+    [(ngModel)]="active"
+    (selectionChange)="onStatusChange()">
+
+    <mat-option [value]="true">
+      Active
+    </mat-option>
+
+    <mat-option [value]="false">
+      Inactive
+    </mat-option>
+
+  </mat-select>
+
+</mat-form-field>
+
+    <!-- Sort -->
+  <button
+    mat-stroked-button
+    type="button"
+    class="sort-button"
+    (click)="toggleSortOrder()"
+    [matTooltip]="sortOrder === 'asc'
+      ? 'Change to descending order'
+      : 'Change to ascending order'">
+
+    @if (sortOrder === 'asc') {
+      Z → A
+    } @else {
+      A → Z
+    }
+
+  </button>
 </div>
 <!-- Loading Spinner -->
 <div class="loading-container" *ngIf="isLoading">

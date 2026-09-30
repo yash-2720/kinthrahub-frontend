@@ -27,7 +27,7 @@ export class ApplicationUserService {
   const params = new HttpParams()
       .set('page', page)
       .set('size', size)
-      .set('sortDirection', sortOrder)
+      .set('sortOrder', sortOrder)
       .set('isActive', isActive);
 
   return this.http.get<PageResponse<ApplicationUserResponse>>(
@@ -48,7 +48,7 @@ searchApplicationUsers(
   const params = new HttpParams()
       .set('page', page)
       .set('size', size)
-      .set('sortDirection', sortOrder)
+      .set('sortOrder', sortOrder)
       .set('search',search)
       .set('isActive', isActive);
 
