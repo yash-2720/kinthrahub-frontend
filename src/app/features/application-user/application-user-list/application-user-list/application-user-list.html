@@ -3,16 +3,16 @@
   <p>View and manage your application users</p>
 </div>
 <div class="search-container">
-  <mat-form-field appearance="outline">
-    <mat-label>Search User</mat-label>
+  <mat-form-field appearance="outline" floatLabel="always">
+  <mat-label>Search User</mat-label>
 
-    <input
-      matInput
-      placeholder="Search by ID, Number, Name or Email"
-      [(ngModel)]="search"
-      (keyup)="onSearch()"
-    />
-  </mat-form-field>
+  <input
+    matInput
+    [(ngModel)]="search"
+    (keyup)="onSearch()"
+    placeholder="Search"
+  />
+</mat-form-field>
   <mat-form-field appearance="outline" class="status-container">
     <mat-label>Status</mat-label>
 

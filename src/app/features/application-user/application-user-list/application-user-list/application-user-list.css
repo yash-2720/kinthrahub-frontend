@@ -11,7 +11,9 @@
 }
 
 .status-container {
+  flex: 0 0 210px;
   width: 210px;
+  margin-left: 8px;
 }
 
 .sort-button {

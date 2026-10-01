@@ -91,7 +91,7 @@ isLoading = false;
     this.isLoading = true;
     console.log('Loading page:', this.page);
     const request = this.search.trim()
-      ? this.employeeService.searchEmployees(this.page, this.size, this.search, this.active)
+      ? this.employeeService.searchEmployees(this.page, this.size, this.search,  this.sortOrder, this.active)
       : this.employeeService.getAllEmployees(this.page, this.size, this.search, this.active, this.sortOrder);
 
     request.subscribe({
