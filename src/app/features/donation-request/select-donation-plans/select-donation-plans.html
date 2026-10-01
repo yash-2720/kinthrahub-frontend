@@ -29,6 +29,22 @@
         <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
+
+    <button
+      mat-stroked-button
+      type="button"
+      class="sort-button"
+      (click)="toggleSortOrder()"
+      [matTooltip]="
+        sortOrder === 'asc' ? 'Change to descending order' : 'Change to ascending order'
+      "
+    >
+      @if (sortOrder === 'asc') {
+        Z → A
+      } @else {
+        A → Z
+      }
+    </button>
   </div>
 
   <!-- Hospital Cards -->
@@ -59,8 +75,9 @@
         @if (donationPlansMap.get(hospital.hospitalId); as donationPlans) {
           @for (plan of donationPlans; track plan.donationPlanId) {
             <mat-checkbox
-            [checked] = "isPlanSelected(plan.donationPlanId)"
-              (change) = "onPlansSelectionChange(plan, $event.checked)">
+              [checked]="isPlanSelected(plan.donationPlanId)"
+              (change)="onPlansSelectionChange(plan, $event.checked)"
+            >
               {{ plan.donationName }}
             </mat-checkbox>
           }
@@ -88,16 +105,13 @@
   >
   </mat-paginator>
   <div class="action-buttons">
-
     <button
-        mat-raised-button
-        color="primary"
-        [disabled] = !hasSelectedPlans
-        (click)="goToConfiguration()">
-
-        Next
-
+      mat-raised-button
+      color="primary"
+      [disabled]="!hasSelectedPlans"
+      (click)="goToConfiguration()"
+    >
+      Next
     </button>
-
-</div>
+  </div>
 </div>

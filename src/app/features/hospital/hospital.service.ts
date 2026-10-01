@@ -21,7 +21,7 @@ export class HospitalService {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)
-      .set('sortDirection', sortOrder)
+      .set('sortOrder', sortOrder)
       .set('isActive', isActive);
 
     return this.http.get<PageResponse<HospitalResponse>>(`${this.HOSPITAL_API}/getAllHospitals`, {
@@ -39,7 +39,7 @@ export class HospitalService {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)
-      .set('sortDirection', sortOrder)
+      .set('sortOrder', sortOrder)
       .set('isActive', isActive)
       .set('search', search);
 

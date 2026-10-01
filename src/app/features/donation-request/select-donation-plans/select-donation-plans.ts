@@ -196,6 +196,14 @@ export class SelectDonationPlans implements OnInit {
     this.cdr.detectChanges();
   }
 
+  toggleSortOrder(): void {
+  this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+
+  this.page = 0;
+
+  this.loadHospitals();
+}
+
   goToConfiguration(): void {
     console.log('Next clicked');
     // this.plansSelected.emit([]);

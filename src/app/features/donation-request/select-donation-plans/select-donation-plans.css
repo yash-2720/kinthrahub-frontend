@@ -31,14 +31,26 @@
 .search-container {
 
     margin-bottom: 24px;
+   
 
 }
 
 .search-field {
 
-    width: 100%;
+    width: 50%;
 
 }
+
+
+.sort-button {
+
+    margin-left: 16px;
+
+    cursor: pointer;
+
+    color: #1976d2;
+
+}   
 
 .hospital-card {
 
