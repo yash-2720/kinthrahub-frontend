@@ -127,14 +127,55 @@
   }
 }
 .search-container {
+  width: 100%;
   margin-bottom: 24px;
 }
 
 .search-container mat-form-field {
   width: 100%;
-  max-width: 500px;
+}
+
+.filters-container {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.filters-container mat-form-field {
+  flex: 1;
 }
 
 mat-paginator {
   margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .donation-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters-container {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .filters-container mat-form-field {
+    width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .donation-details {
+    grid-template-columns: 1fr;
+  }
+
+  .card-actions {
+    justify-content: flex-end;
+    flex-direction: row;
+  }
+
+  .card-actions button {
+    width: auto;
+  }
 }

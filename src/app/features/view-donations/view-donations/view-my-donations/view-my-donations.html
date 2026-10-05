@@ -3,6 +3,7 @@
     <h1>My Donations</h1>
     <p>View and manage your donation requests</p>
   </div>
+
   <div class="search-container">
     <mat-form-field appearance="outline">
       <mat-label>Search donations</mat-label>
@@ -22,6 +23,52 @@
         </button>
       }
     </mat-form-field>
+  </div>
+
+  <!-- Donation Filters -->
+  <div class="filters-container">
+    <!-- Donation Status -->
+    <mat-form-field appearance="outline">
+      <mat-label>Donation Status</mat-label>
+
+      <mat-select [(ngModel)]="selectedDonationStatus" (selectionChange)="onFilterChange()">
+        <mat-option [value]="null"> All Statuses </mat-option>
+
+        @for (status of DonationStatus | keyvalue; track status.key) {
+          <mat-option [value]="status.value">
+            {{ status.value }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Donation Type -->
+    <mat-form-field appearance="outline">
+      <mat-label>Donation Type</mat-label>
+
+      <mat-select [(ngModel)]="selectedDonationType" (selectionChange)="onFilterChange()">
+        <mat-option [value]="null"> All Types </mat-option>
+
+        @for (type of DonationType | keyvalue; track type.key) {
+          <mat-option [value]="type.value">
+            {{ type.value }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (role === 'ROLE_ADMIN') {
+      <!-- Donation Scope -->
+      <mat-form-field appearance="outline">
+        <mat-label>Donation Scope</mat-label>
+
+        <mat-select [(ngModel)]="myDonations" (selectionChange)="onFilterChange()">
+          <mat-option [value]="true"> My Donations </mat-option>
+
+          <mat-option [value]="false"> All Donations </mat-option>
+        </mat-select>
+      </mat-form-field>
+    }
   </div>
 
   @if (donationRequests.length === 0) {
@@ -88,20 +135,21 @@
             >
               View Details
             </button>
-            
-            @if(donation.donationStatus == DonationStatus.INITIALIZED){
-            <button
-              mat-raised-button
-              color="warn"
-              (click)="openDeleteDialog(donation.donationRequestId)"
-            >
-              Cancel Donation
-            </button>
-          }
+
+            @if (donation.donationStatus == DonationStatus.INITIALIZED) {
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="openDeleteDialog(donation.donationRequestId)"
+              >
+                Cancel Donation
+              </button>
+            }
           </mat-card-actions>
         </mat-card>
       }
     </div>
+
     <mat-paginator
       [length]="totalElements"
       [pageSize]="size"

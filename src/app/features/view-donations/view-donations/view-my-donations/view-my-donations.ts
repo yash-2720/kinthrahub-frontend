@@ -10,11 +10,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, type PageEvent } from '@angular/material/paginator';
-import { MatDialogModule,  MatDialog } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { EmployeeViewDialog } from '../../../employee/components/employee-view-dialog/employee-view-dialog';
 import { ViewDetailsDialog } from '../../view-details-dialog/view-details-dialog/view-details-dialog';
 import { DeleteDonationDialog } from '../../view-details-dialog/delete-donation-dialog/delete-donation-dialog/delete-donation-dialog';
 import { DonationStatus } from '../../../donation-request/enums/donation-status.enum';
+import { DonationType } from '../../../donation-request/enums/donation-type.enum';
+import { MatSelectModule } from '@angular/material/select';
+import { KeyValuePipe } from '@angular/common';
+import  { TokenService } from '../../../../core/services/token.service';
 
 @Component({
   selector: 'app-view-my-donations',
@@ -26,8 +30,10 @@ import { DonationStatus } from '../../../donation-request/enums/donation-status.
     MatInputModule,
     MatPaginatorModule,
     MatIconModule,
-    MatDialogModule
-  ],
+    MatDialogModule,
+    MatSelectModule,
+    KeyValuePipe
+],
   templateUrl: './view-my-donations.html',
   styleUrl: './view-my-donations.css',
 })
@@ -37,26 +43,37 @@ export class ViewMyDonations implements OnInit {
   size = 5;
   active = true;
   search = '';
-  searchSubject = new Subject<string>;
+  searchSubject = new Subject<string>();
   donationRequests: DonationRequestResponse[] = [];
   DonationStatus = DonationStatus; // Expose the enum to the template
-  
+  DonationType = DonationType;
+
+
+  selectedDonationStatus: DonationStatus | null = null;
+  selectedDonationType: DonationType | null = null;
+  myDonations = true;
+  role : string | null = null;
   constructor(
     private donationRequestService: DonationRequestService,
     private cdr: ChangeDetectorRef,
     private snackbar: SnackbarService,
-     private dialog: MatDialog
+    private dialog: MatDialog,
+    private tokenService : TokenService
   ) {}
+
+
 
   ngOnInit(): void {
     this.loadDonationRequests();
 
-    this.searchSubject.pipe(debounceTime(400), distinctUntilChanged(),).subscribe(() => {
-        this.page = 0;
+    this.searchSubject.pipe(debounceTime(400), distinctUntilChanged()).subscribe(() => {
+      this.page = 0;
+      this.loadDonationRequests();
+      this.cdr.detectChanges();
+    });
 
-        this.loadDonationRequests();
-        this.cdr.detectChanges();
-      });
+    this.role = this.tokenService.getRole();
+    console.log('Role in view-my-donations : ', this.role);
   }
 
   loadDonationRequests(): void {
@@ -66,44 +83,59 @@ export class ViewMyDonations implements OnInit {
           this.size,
           this.active,
           this.search,
+          this.selectedDonationStatus,
+          this.selectedDonationType,
+          this.myDonations,
         )
-      : this.donationRequestService.getAllDonationRequests(this.page, this.size, this.active);
+      : this.donationRequestService.getAllDonationRequests(
+          this.page,
+          this.size,
+          this.active,
+          this.selectedDonationStatus,
+          this.selectedDonationType,
+          this.myDonations,
+        );
     request.subscribe({
-        next: (response) => {
-          this.donationRequests = response.content;
-          this.totalElements = response.totalElements;
-          console.log('Donation Requests : ', this.donationRequests);
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          this.snackbar.error(error?.error?.message);
-        },
-      });
+      next: (response) => {
+        this.donationRequests = response.content;
+        this.totalElements = response.totalElements;
+        console.log('Donation Requests : ', this.donationRequests);
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.snackbar.error(error?.error?.message);
+      },
+    });
   }
 
-  onSearch():void{
+  onSearch(): void {
     this.searchSubject.next(this.search);
     this.cdr.detectChanges();
   }
 
-  onPageChange(event : PageEvent):void{
+  onPageChange(event: PageEvent): void {
     this.page = event.pageIndex;
     this.size = event.pageSize;
     this.loadDonationRequests();
     this.cdr.detectChanges();
   }
 
-   openViewDialog(donationRequestId: String): void {
-    console.log("Open view dialog clicked");
-      this.dialog.open(ViewDetailsDialog, { data: { donationRequestId: donationRequestId } });
-    }
+  onFilterChange(): void {
+    this.page = 0;
+    this.loadDonationRequests();
+  }
 
-    //  openDeleteDialog(donationRequestId: String): void {
-    // console.log("Open view dialog clicked");
-    //   this.dialog.open(DeleteDonationDialog, { data: { donationRequestId: donationRequestId } });
-    // }
+  openViewDialog(donationRequestId: String): void {
+    console.log('Open view dialog clicked');
+    this.dialog.open(ViewDetailsDialog, { data: { donationRequestId: donationRequestId } });
+  }
 
- openDeleteDialog(donationRequestId: string): void {
+  //  openDeleteDialog(donationRequestId: String): void {
+  // console.log("Open view dialog clicked");
+  //   this.dialog.open(DeleteDonationDialog, { data: { donationRequestId: donationRequestId } });
+  // }
+
+  openDeleteDialog(donationRequestId: string): void {
     const dialogRef = this.dialog.open(DeleteDonationDialog, {
       data: {
         donationRequestId: donationRequestId,
@@ -116,4 +148,4 @@ export class ViewMyDonations implements OnInit {
       }
     });
   }
-  }
+}

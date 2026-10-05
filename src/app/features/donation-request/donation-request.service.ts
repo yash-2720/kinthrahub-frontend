@@ -8,6 +8,8 @@ import type { DonationRequestResponse } from './models/donation-request-response
 import type { Observable } from 'rxjs';
 import type { DonationRequest } from './models/donation-request';
 import type { DonationSummaryResponse } from '../dashboard/model/donation-summary-response';
+import type { DonationStatus } from './enums/donation-status.enum';
+import type { DonationType } from './enums/donation-type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -20,13 +22,27 @@ export class DonationRequestService {
     page: number,
     size: number,
     isActive: boolean,
+    donationStatus: DonationStatus | null,
+    donationType: DonationType | null,
+    myDonations: boolean,
   ): Observable<PageResponse<DonationRequestResponse>> {
-    const params = new HttpParams().set('page', page).set('size', size).set('isActive', isActive);
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('isActive', isActive)
+      .set('myDonations', myDonations);
+
+    if (donationStatus !== null) {
+      params = params.set('donationStatus', donationStatus);
+    }
+
+    if (donationType !== null) {
+      params = params.set('donationType', donationType);
+    }
+
     return this.http.get<PageResponse<DonationRequestResponse>>(
       `${this.DONATION_REQUEST_API}/getAllDonationRequests`,
-      {
-        params,
-      },
+      { params },
     );
   }
   searchDonationRequests(
@@ -34,17 +50,28 @@ export class DonationRequestService {
     size: number,
     isActive: boolean,
     search: string,
+    donationStatus: DonationStatus | null,
+    donationType: DonationType | null,
+    myDonations: boolean,
   ): Observable<PageResponse<DonationRequestResponse>> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('page', page)
       .set('size', size)
       .set('isActive', isActive)
-      .set('search', search);
+      .set('search', search)
+      .set('myDonations', myDonations);
+
+    if (donationStatus !== null) {
+      params = params.set('donationStatus', donationStatus);
+    }
+
+    if (donationType !== null) {
+      params = params.set('donationType', donationType);
+    }
+
     return this.http.get<PageResponse<DonationRequestResponse>>(
       `${this.DONATION_REQUEST_API}/search`,
-      {
-        params,
-      },
+      { params },
     );
   }
 
