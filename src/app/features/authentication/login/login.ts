@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { LoginRequest } from '../../../core/models/login-request';
@@ -28,12 +28,15 @@ import { SnackbarService } from '../../../shared/services/snackbar.service';
 export class Login {
   loginForm: FormGroup;
 
+  errorMessage: String = '';
+
   constructor(
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
     private tokenService: TokenService,
     private router: Router,
     private snackbar: SnackbarService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.loginForm = this.fb.group({
       username: [''],
@@ -47,6 +50,7 @@ export class Login {
   }
 
   login(): void {
+    this.errorMessage = '';
     this.authenticationService.login(this.loginForm.value as LoginRequest).subscribe({
       next: (response) => {
         this.tokenService.saveToken(response.token);
@@ -55,8 +59,13 @@ export class Login {
         this.redirectToDashboard();
       },
       error: (error) => {
-        this.snackbar.error( error? error.message : 'Login failed. Please check your credentials and try again.');
-        console.error('Login failedd:', error);
+        this.errorMessage = 'Incorrect Credentials';
+        this.cdr.detectChanges();
+        // this.snackbar.error(
+        //   error ? error.message : 'Login failed. Please check your credentials and try again.',
+        // );
+
+        console.error('Login faileddd:', error);
       },
     });
   }

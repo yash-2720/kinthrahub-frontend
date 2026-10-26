@@ -14,7 +14,7 @@ import { TokenService } from '../../../core/services/token.service';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PayrollService } from '../../payroll/payroll.service';
-import  { SnackbarService } from '../../../shared/services/snackbar.service';
+import { SnackbarService } from '../../../shared/services/snackbar.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -40,7 +40,7 @@ export class Dashboard {
     private dashboardService: DashboardService,
     private tokenService: TokenService,
     private payrollService: PayrollService,
-    private snackbar : SnackbarService,
+    private snackbar: SnackbarService,
   ) {}
 
   myActiveDonations = 0;
@@ -65,23 +65,23 @@ export class Dashboard {
     if (this.role === 'ROLE_ADMIN') {
       this.loadAllData();
     }
-    if(this.role== 'ROLE_PAYROLL_ADMIN' || this.role === 'ROLE_ADMIN'){
+    if (this.role == 'ROLE_PAYROLL_ADMIN' || this.role === 'ROLE_ADMIN') {
       this.loadPayrollData();
     }
   }
 
   loadPayrollData(): void {
     this.payrollService.getLatestPayroll().subscribe({
-      next : (response)=>{
+      next: (response) => {
         this.payrollData = response;
         console.log('Payroll Data:', this.payrollData);
         this.isPayrollDataLoading = false;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
-      error : (error)=>{
-        this.snackbar.error( error? error.message : 'Error loading payroll data.');
-      }
-    })
+      error: (error) => {
+        // this.snackbar.error( error? error.message : 'Error loading payroll data.');
+      },
+    });
   }
 
   loadMyData(): void {
@@ -94,10 +94,9 @@ export class Dashboard {
         this.isMyDataLoading = false;
         this.cdr.detectChanges();
       },
-      error:(error)=>{
-        this.snackbar.error( error? error.message : 'Error loading my donation summary.');
-      }
-
+      error: (error) => {
+        this.snackbar.error(error ? error.message : 'Error loading my donation summary.');
+      },
     });
   }
 
@@ -112,7 +111,7 @@ export class Dashboard {
         this.cdr.detectChanges();
       },
       error: (error) => {
-         this.snackbar.error( error? error.message : 'Error loading all donation summary.');
+        this.snackbar.error(error ? error.message : 'Error loading all donation summary.');
         console.error('Error loading all donation summary:', error);
       },
     });
